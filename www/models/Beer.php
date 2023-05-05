@@ -324,6 +324,7 @@ class Beer extends Database
                 "food_pairing3" => $beer->getFoodPairing3(),
                 "id" => $id
             ]);
+            $beer->setId($id);
             return $beer;
         } catch(Exception $e) {
             throw $e;
