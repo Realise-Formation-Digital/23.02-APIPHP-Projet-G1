@@ -6,12 +6,12 @@ class Ingredient extends Database
 {
 
     private ?int $id;
-    private $type;
-    private $name;
-    private $amountValue;
-    private $amountUnit;
-    private $amountAdd;
-    private $amountAttribute;
+    private ?string $type;
+    private ?string $name;
+    private ?float $amountValue;
+    private ?string $amountUnit;
+    private ?string $amountAdd;
+    private ?string $amountAttribute;
 
 
     public function getId(): ?int
@@ -92,7 +92,6 @@ class Ingredient extends Database
      */
     public function search(): array
     {
-        return [];
     }
 
     /**
@@ -103,7 +102,24 @@ class Ingredient extends Database
      */
     public function create(Ingredient $ingredient): Ingredient
     {
+        try {
+            $stmt = $this->pdo->prepare("INSERT INTO ingredients (id, type, name, amount_value, amount_unit, amount_add, amount_attribute) VALUES (:id, :type, :name, :amount_value, :amount_unit, :amount_add, :amount_attribute)");
+            $stmt->execute([
+                "type" => $ingredient->getType(),
+                "name" => $ingredient->getName(),
+                "amount_value" => $ingredient->getAmountValue(),
+                "amount_unit" => $ingredient->getAmountUnit(),
+                "amount_add" => $ingredient->getAmountAdd(),
+                "amount_attribute" => $ingredient->getAmountAttribute(),
+            ]);
+            $id =$this->pdo->lastInsertId();
+            $ingredient->setId($id);
+            return $ingredient;
+        } catch (Exception $e) {
+            throw $e;
+        }
     }
+
 
     /**
      * Method to get a unique ingredient by id from db
@@ -128,12 +144,10 @@ class Ingredient extends Database
             $ingredientObj->setAmountAttribute($ingredient->amount_attribute);
 
             return $ingredientObj;
+        } catch (Exception $e) {
+            echo (['message' => $e->getMessage()]);
         }
-    catch(Exception $e){
-        echo (['message' => $e->getMessage()]);
-       
     }
-}
 
     /**
      * Method to update an ingredient by id in db

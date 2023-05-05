@@ -1,5 +1,4 @@
 <?php
-
 require_once("../models/Ingredient.php");
 require_once("./baseController.php");
 
@@ -19,8 +18,20 @@ function read(int $id)
 function search()
 {
 }
-function create(array $body)
+
+/**
+ * Function that create an array of ingredient
+ */
+function create(stdClass $body)
 {
+    /**
+     * first decode the JSON format in body
+     * Then create object newIngredient with the content of body
+     * Finally return encode in JSON format 
+     */
+    $ingredient = deserializeBody($body);
+    $newIngredient = $ingredient->create($ingredient);
+    return serializeBeer ($newIngredient);
 }
 
 function update(int $id, array $body)
