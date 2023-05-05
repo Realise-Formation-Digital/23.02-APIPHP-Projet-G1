@@ -245,7 +245,22 @@ class Beer extends Database
      * @return Beer
      */
     public function create(Beer $beer): Beer {
-
+        $stmt = $this->pdo->prepare("INSERT INTO beers (name, tagline, first_brewed, description, image_url, brewers_tips, contribued_by, food_pairing1, food_pairing2, food_pairing3) VALUES (:name, :tagline, :first_brewed, :description, :image_url, :brewers_tips, :contribued_by, :food_pairing1, :food_pairing2, :food_pairing3)");
+        $stmt->execute([
+            "name" => $beer->getName(),
+            "tagline" => $beer->getTagline(),
+            "first_brewed" => $beer->getFirstBrewed(),
+            "description" => $beer->getDescription(),
+            "image_url" => $beer->getImageUrl(),
+            "brewers_tips" => $beer->getBrewersTips(),
+            "contribued_by" => $beer->getContribuedBy(),
+            "food_pairing1" => $beer->getFoodPairing1(),
+            "food_pairing2" => $beer->getFoodPairing2(),
+            "food_pairing3" => $beer->getFoodPairing3(),
+        ]);
+        $id = $this->pdo->lastInsertId();
+        $beer->setId($id);
+        return $beer;
     }
 
     /**
