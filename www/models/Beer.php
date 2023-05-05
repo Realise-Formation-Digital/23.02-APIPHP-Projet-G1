@@ -313,7 +313,15 @@ class Beer extends Database
      * @return string
      */
     public function delete(int $id): string {
-
+        try {
+            $stmt = $this->pdo->prepare("DELETE FROM beers WHERE id = :id");
+            $stmt->execute([
+                "id" => $id
+            ]);
+            return "La bière d'id $id a été supprimée";
+        } catch(Exception $e) {
+            throw $e;
+        }
     }
 
 

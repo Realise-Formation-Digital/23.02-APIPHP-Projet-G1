@@ -32,6 +32,9 @@ function create(stdClass $body): array
     return serializeBeer($newBeer);
 }
 
+/**
+ * @throws Exception
+ */
 function update(int $id, stdClass $body): array
 {
     $beer = deserializeBody($body);
@@ -39,8 +42,14 @@ function update(int $id, stdClass $body): array
     return serializeBeer($updatedBeer);
 }
 
-function delete(int $id) {
-
+/**
+ * @throws Exception
+ */
+function delete(int $id): array
+{
+    $beer = new Beer();
+    $message = $beer->delete($id);
+    return ["message" => $message];
 }
 
 function serializeBeer(Beer $beer): array {
