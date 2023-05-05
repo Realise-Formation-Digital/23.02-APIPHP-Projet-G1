@@ -209,14 +209,15 @@ class Beer extends Database
      * @return array
      * @throws Exception
      */
-    public function search(): array {
+    public function search(): array
+    {
         try {
             $stmt = $this->pdo->prepare("SELECT * FROM beers");
             $stmt->execute();
             $beers = $stmt->fetchAll(PDO::FETCH_OBJ);
 
             $beersObj = [];
-            foreach($beers as $beer) {
+            foreach ($beers as $beer) {
                 $tempBeer = new Beer();
                 $tempBeer->setId($beer->id);
                 $tempBeer->setName($beer->name);
@@ -232,8 +233,7 @@ class Beer extends Database
                 $beersObj[] = $tempBeer;
             }
             return $beersObj;
-
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             throw $e;
         }
     }
@@ -244,8 +244,8 @@ class Beer extends Database
      * @param Beer $beer
      * @return Beer
      */
-    public function create(Beer $beer): Beer {
-
+    public function create(Beer $beer): Beer
+    {
     }
 
     /**
@@ -254,8 +254,32 @@ class Beer extends Database
      * @param int $id
      * @return Beer
      */
-    public function read(int $id): Beer {
+    public function read(int $id): Beer
+    {
+        try {
+            $stmt = $this->pdo->prepare("SELECT * FROM beers WHERE id = :id");
+            $stmt->execute([
+                'id' => $id
+            ]);
+            $beer = $stmt->fetch(PDO::FETCH_OBJ);
 
+            $beerObj = new Beer();
+            $beerObj->setId($beer->id);
+            $beerObj->setName($beer->name);
+            $beerObj->setTagline($beer->tagline);
+            $beerObj->setFirstBrewed($beer->first_brewed);
+            $beerObj->setDescription($beer->description);
+            $beerObj->setImageUrl($beer->image_url);
+            $beerObj->setBrewersTips($beer->brewers_tips);
+            $beerObj->setContribuedBy($beer->contribued_by);
+            $beerObj->setFoodPairing1($beer->food_pairing1);
+            $beerObj->setFoodPairing2($beer->food_pairing2);
+            $beerObj->setFoodPairing3($beer->food_pairing3);
+
+            return $beerObj;
+        } catch (Exception $e) {
+            throw $e;
+        }
     }
 
     /**
@@ -264,8 +288,8 @@ class Beer extends Database
      * @param int $id
      * @return Beer
      */
-    public function update(int $id): Beer {
-
+    public function update(int $id): Beer
+    {
     }
 
     /**
@@ -274,10 +298,7 @@ class Beer extends Database
      * @param int $id
      * @return string
      */
-    public function delete(int $id): string {
-
+    public function delete(int $id): string
+    {
     }
-
-
-
 }

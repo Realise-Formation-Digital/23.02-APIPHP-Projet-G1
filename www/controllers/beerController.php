@@ -3,36 +3,47 @@
 require_once("../models/Beer.php");
 require_once("./baseController.php");
 
-function read(int $id) {
-
+/**
+ * GET a beer by a id
+ * Instantciation of a beer
+ * read the beer selected with the instanciation
+ * return the serialize version of selected beer.
+ */
+function read(int $id)
+{
+    $beerI = new Beer();
+    $beerSelected = $beerI->read($id);
+    return serializeBeer($beerSelected);
 }
 
 /**
  * @throws Exception
  */
-function search(): array {
+function search(): array
+{
     $beer = new Beer();
     $beers = $beer->search();
 
     $serializedBeers = [];
-    foreach($beers as $beer) {
+    foreach ($beers as $beer) {
         $serializedBeers[] = serializeBeer($beer);
     }
     return $serializedBeers;
 }
-function create(array $body) {
-
+function create(array $body)
+{
 }
 
-function update(int $id, array $body) {
-
+function update(int $id, array $body)
+{
 }
 
-function delete(int $id) {
-
+function delete(int $id)
+{
 }
 
-function serializeBeer(Beer $beer): array {
+function serializeBeer(Beer $beer): array
+{
     return [
         'id' => $beer->getId(),
         'name' => $beer->getName(),
@@ -49,4 +60,3 @@ function serializeBeer(Beer $beer): array {
         "contribued_by" => $beer->getContribuedBy()
     ];
 }
-
