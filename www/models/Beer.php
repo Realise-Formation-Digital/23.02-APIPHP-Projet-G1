@@ -244,8 +244,27 @@ class Beer extends Database
      * @param Beer $beer
      * @return Beer
      */
-    public function create(Beer $beer): Beer
-    {
+    public function create(Beer $beer): Beer {
+        try {
+            $stmt = $this->pdo->prepare("INSERT INTO beers (name, tagline, first_brewed, description, image_url, brewers_tips, contribued_by, food_pairing1, food_pairing2, food_pairing3) VALUES (:name, :tagline, :first_brewed, :description, :image_url, :brewers_tips, :contribued_by, :food_pairing1, :food_pairing2, :food_pairing3)");
+            $stmt->execute([
+                "name" => $beer->getName(),
+                "tagline" => $beer->getTagline(),
+                "first_brewed" => $beer->getFirstBrewed(),
+                "description" => $beer->getDescription(),
+                "image_url" => $beer->getImageUrl(),
+                "brewers_tips" => $beer->getBrewersTips(),
+                "contribued_by" => $beer->getContribuedBy(),
+                "food_pairing1" => $beer->getFoodPairing1(),
+                "food_pairing2" => $beer->getFoodPairing2(),
+                "food_pairing3" => $beer->getFoodPairing3(),
+            ]);
+            $id = $this->pdo->lastInsertId();
+            $beer->setId($id);
+            return $beer;
+        } catch(Exception $e) {
+            throw $e;
+        }
     }
 
     /**
@@ -286,10 +305,29 @@ class Beer extends Database
      * Method to update a beer by id in db
      *
      * @param int $id
+     * @param Beer $beer
      * @return Beer
      */
-    public function update(int $id): Beer
-    {
+    public function update(int $id, Beer $beer): Beer {
+        try {
+            $stmt = $this->pdo->prepare("UPDATE beers SET name = :name, tagline = :tagline, first_brewed = :first_brewed, description = :description, image_url = :image_url, brewers_tips = :brewers_tips, contribued_by = :contribued_by, food_pairing1 = :food_pairing1, food_pairing2 = :food_pairing2, food_pairing3 = :food_pairing3 WHERE id = :id");
+            $stmt->execute([
+                "name" => $beer->getName(),
+                "tagline" => $beer->getTagline(),
+                "first_brewed" => $beer->getFirstBrewed(),
+                "description" => $beer->getDescription(),
+                "image_url" => $beer->getImageUrl(),
+                "brewers_tips" => $beer->getBrewersTips(),
+                "contribued_by" => $beer->getContribuedBy(),
+                "food_pairing1" => $beer->getFoodPairing1(),
+                "food_pairing2" => $beer->getFoodPairing2(),
+                "food_pairing3" => $beer->getFoodPairing3(),
+                "id" => $id
+            ]);
+            return $beer;
+        } catch(Exception $e) {
+            throw $e;
+        }
     }
 
     /**
@@ -298,7 +336,15 @@ class Beer extends Database
      * @param int $id
      * @return string
      */
-    public function delete(int $id): string
-    {
+    public function delete(int $id): string {
+        try {
+            $stmt = $this->pdo->prepare("DELETE FROM beers WHERE id = :id");
+            $stmt->execute([
+                "id" => $id
+            ]);
+            return "La bière d'id $id a été supprimée";
+        } catch(Exception $e) {
+            throw $e;
+        }
     }
 }
