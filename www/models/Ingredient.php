@@ -113,23 +113,22 @@ class Ingredient extends Database
      */
     public function read(int $id): Ingredient
     {
-        try
-    {
-        $stmt = $this->pdo->prepare("SELECT * FROM ingredients WHERE :id");
-        $stmt->execute(['id' => $id]);
-        $ingredient = $stmt->fetch(PDO::FETCH_OBJ);
+        try {
+            $stmt = $this->pdo->prepare("SELECT * FROM ingredients WHERE id = :id");
+            $stmt->execute(['id' => $id]);
+            $ingredient = $stmt->fetch(PDO::FETCH_OBJ);
 
-        $ingredientObj = new Ingredient();
-        $ingredientObj->setId($ingredient->id);
-        $ingredientObj->setName($ingredient->name);
-        $ingredientObj->setType($ingredient->type);
-        $ingredientObj->setAmountValue($ingredient->amount_value);
-        $ingredientObj->setAmountUnit($ingredient->amount_unit);
-        $ingredientObj->setAmountAdd($ingredient->amount_add);
-        $ingredientObj->setAmountAttribute($ingredient->amount_attribute);
+            $ingredientObj = new Ingredient();
+            $ingredientObj->setId($ingredient->id);
+            $ingredientObj->setName($ingredient->name);
+            $ingredientObj->setType($ingredient->type);
+            $ingredientObj->setAmountValue($ingredient->amount_value);
+            $ingredientObj->setAmountUnit($ingredient->amount_unit);
+            $ingredientObj->setAmountAdd($ingredient->amount_add);
+            $ingredientObj->setAmountAttribute($ingredient->amount_attribute);
 
-        return $ingredientObj;
-    }
+            return $ingredientObj;
+        }
     catch(Exception $e){
         echo (['message' => $e->getMessage()]);
        
