@@ -128,12 +128,10 @@ class Ingredient extends Database
             $ingredientObj->setAmountAttribute($ingredient->amount_attribute);
 
             return $ingredientObj;
+        } catch (Exception $e) {
+            echo (['message' => $e->getMessage()]);
         }
-    catch(Exception $e){
-        echo (['message' => $e->getMessage()]);
-       
     }
-}
 
     /**
      * Method to update an ingredient by id in db
@@ -141,8 +139,24 @@ class Ingredient extends Database
      * @param int $id
      * @return Ingredient
      */
-    public function update(int $id): Ingredient
+    public function update(int $id, Ingredient $ingredient): Ingredient
     {
+
+        $stmt = $this->pdo->prepare("UPDATE ingredients SET type = :type, name = :name, amount_value = :amountValue, amount_unit = :amountUnit, amount_add = :amountAdd, amount_attribute = :amountAttribute WHERE id = :id");
+    var_dump($ingredient);
+        $stmt->execute(
+            [
+                "type" => $ingredient->getType(),
+                "name" => $ingredient->getName(),
+                "amountValue" => $ingredient->getAmountValue(),
+                "amountUnit" => $ingredient->getAmountUnit(),
+                "amountAdd" => $ingredient->getAmountAdd(),
+                "amountAttribute" => $ingredient->getAmountAttribute(),
+                "id" => $id
+            ]);
+            $ingredient->setId($id);
+            var_dump($ingredient);
+            return $ingredient;
     }
 
     /**
