@@ -14,11 +14,13 @@ class Ingredient extends Database
     private $amountAttribute;
 
 
-    public function getId(): ?int {
+    public function getId(): ?int
+    {
         return $this->id;
     }
 
-    public function setId(?int $id) {
+    public function setId(?int $id)
+    {
         $this->id = $id;
     }
 
@@ -88,7 +90,8 @@ class Ingredient extends Database
      *
      * @return array
      */
-    public function search(): array {
+    public function search(): array
+    {
         return [];
     }
 
@@ -98,8 +101,8 @@ class Ingredient extends Database
      * @param Ingredient $ingredient
      * @return Ingredient
      */
-    public function create(Ingredient $ingredient): Ingredient {
-
+    public function create(Ingredient $ingredient): Ingredient
+    {
     }
 
     /**
@@ -108,11 +111,13 @@ class Ingredient extends Database
      * @param int $id
      * @return Ingredient
      */
-    public function read(int $id): Ingredient {
+    public function read(int $id): Ingredient
+    {
+        try
+    {
         $stmt = $this->pdo->prepare("SELECT * FROM ingredients WHERE :id");
         $stmt->execute(['id' => $id]);
         $ingredient = $stmt->fetch(PDO::FETCH_OBJ);
-        var_dump($ingredient);
 
         $ingredientObj = new Ingredient();
         $ingredientObj->setId($ingredient->id);
@@ -122,11 +127,14 @@ class Ingredient extends Database
         $ingredientObj->setAmountUnit($ingredient->amount_unit);
         $ingredientObj->setAmountAdd($ingredient->amount_add);
         $ingredientObj->setAmountAttribute($ingredient->amount_attribute);
-      
-        var_dump($ingredientObj);
-        
+
         return $ingredientObj;
     }
+    catch(Exception $e){
+        echo (['message' => $e->getMessage()]);
+       
+    }
+}
 
     /**
      * Method to update an ingredient by id in db
@@ -134,8 +142,8 @@ class Ingredient extends Database
      * @param int $id
      * @return Ingredient
      */
-    public function update(int $id): Ingredient {
-
+    public function update(int $id): Ingredient
+    {
     }
 
     /**
@@ -144,8 +152,7 @@ class Ingredient extends Database
      * @param int $id
      * @return string
      */
-    public function delete(int $id): string {
-
+    public function delete(int $id): string
+    {
     }
-
 }

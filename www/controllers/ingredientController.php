@@ -3,31 +3,36 @@
 require_once("../models/Ingredient.php");
 require_once("./baseController.php");
 
-function read(int $id) {
+ /**
+     * Get a single object from the database.
+     * 
+     * @return object
+     */
+function read(int $id)
+{
     $ingr = new Ingredient();
     $ingredient = $ingr->read($id);
     
-  
     return serializeIngredient($ingredient);
-   
 }
 
-function search() {
-
+function search()
+{
 }
-function create(array $body) {
-
-}
-
-function update(int $id, array $body) {
-
+function create(array $body)
+{
 }
 
-function delete(int $id) {
-
+function update(int $id, array $body)
+{
 }
 
-function serializeIngredient(Ingredient $ingr): array {
+function delete(int $id)
+{
+}
+
+function serializeIngredient(Ingredient $ingr): array
+{
     return [
         'id' => $ingr->getId(),
         'name' => $ingr->getName(),
