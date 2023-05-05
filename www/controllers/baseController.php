@@ -1,14 +1,19 @@
 <?php
 
 parse_str($_SERVER['QUERY_STRING'], $query);
-$body = json_decode(file_get_contents('php://input'));
+$body = json_decode(file_get_contents('php://input'), false);
 $method = $_SERVER['REQUEST_METHOD'];
 
 try {
     header('Content-Type:application/json;charset=utf-8');
 
+    // test if body is a correct JSON (when we use body)
+    if (json_last_error() != JSON_ERROR_NONE && $method != "GET" && $method != "DELETE") {
+        throw new Exception("Le body de la requête est mal formé.", 400);
+    }
+
     // Récupération des variables.
-    $id = isset($query['id']) ? $query['id'] : '';
+    $id = isset($query['id']) ? (int) $query['id'] : '';
     $body = isset($body) ? $body : '';
 
     // Appel des méthodes souhaitées.
@@ -35,5 +40,6 @@ try {
     echo json_encode($resultat);
 
 } catch(Exception $e) {
+    http_response_code($e->getCode());
     echo json_encode(['message' => $e->getMessage()]);
 }

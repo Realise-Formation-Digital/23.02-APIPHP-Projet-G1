@@ -282,6 +282,11 @@ class Beer extends Database
             ]);
             $beer = $stmt->fetch(PDO::FETCH_OBJ);
 
+            //test if beer exists
+            if (!$beer) {
+                throw new Exception("La bière d'id $id n'existe pas", 400);
+            }
+
             $beerObj = new Beer();
             $beerObj->setId($beer->id);
             $beerObj->setName($beer->name);
@@ -307,8 +312,12 @@ class Beer extends Database
      * @param int $id
      * @param Beer $beer
      * @return Beer
+     * @throws Exception
      */
     public function update(int $id, Beer $beer): Beer {
+        //test if beer exists
+        $this->read($id);
+
         try {
             $stmt = $this->pdo->prepare("UPDATE beers SET name = :name, tagline = :tagline, first_brewed = :first_brewed, description = :description, image_url = :image_url, brewers_tips = :brewers_tips, contribued_by = :contribued_by, food_pairing1 = :food_pairing1, food_pairing2 = :food_pairing2, food_pairing3 = :food_pairing3 WHERE id = :id");
             $stmt->execute([
@@ -324,6 +333,13 @@ class Beer extends Database
                 "food_pairing3" => $beer->getFoodPairing3(),
                 "id" => $id
             ]);
+
+            // test if updated
+            $count = $stmt->rowCount();
+            if ($count == 0) {
+                throw new Exception("La bière n'a pas été mise-à-jour.", 400);
+            }
+
             $beer->setId($id);
             return $beer;
         } catch(Exception $e) {
@@ -336,14 +352,25 @@ class Beer extends Database
      *
      * @param int $id
      * @return string
+     * @throws Exception
      */
     public function delete(int $id): string {
+        //test if beer exists
+        $this->read($id);
+
         try {
             $stmt = $this->pdo->prepare("DELETE FROM beers WHERE id = :id");
             $stmt->execute([
                 "id" => $id
             ]);
-            return "La bière d'id $id a été supprimée";
+
+            // test if deleted
+            $count = $stmt->rowCount();
+            if ($count == 0) {
+                throw new Exception("La bière n'a pas été supprimée.", 400);
+            }
+
+            return "La bière d'id $id été supprimée";
         } catch(Exception $e) {
             throw $e;
         }
