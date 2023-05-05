@@ -23,7 +23,7 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `beers` (
-  `id` int(255) NOT NULL,
+  `id` int(255) NOT NULL AUTO_INCREMENT,
   `name` varchar(25) DEFAULT NULL,
   `tagline` varchar(50) NOT NULL,
   `first_brewed` date NOT NULL,
@@ -33,7 +33,8 @@ CREATE TABLE `beers` (
   `contribued_by` varchar(50) NOT NULL,
   `food_pairing1` varchar(50) DEFAULT NULL,
   `food_pairing2` varchar(50) DEFAULT NULL,
-  `food_pairing3` varchar(50) DEFAULT NULL
+  `food_pairing3` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -54,24 +55,15 @@ CREATE TABLE `beer_ingredient` (
 --
 
 CREATE TABLE `ingredients` (
-  `id` int(255) NOT NULL,
+  `id` int(255) NOT NULL AUTO_INCREMENT,
   `type` enum('malt','hops') NOT NULL,
   `name` varchar(50) NOT NULL,
   `amount_value` float(255,1) NOT NULL,
   `amount_unit` varchar(15) NOT NULL,
   `amount_add` varchar(15) DEFAULT NULL,
-  `amount_attribute` varchar(15) DEFAULT NULL
+  `amount_attribute` varchar(15) DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Index pour les tables déchargées
---
-
---
--- Index pour la table `beers`
---
-ALTER TABLE `beers`
-  ADD PRIMARY KEY (`id`);
 
 --
 -- Index pour la table `beer_ingredient`
@@ -79,12 +71,6 @@ ALTER TABLE `beers`
 ALTER TABLE `beer_ingredient`
   ADD KEY `ingredient_id` (`ingredient_id`),
   ADD KEY `beer_id` (`beer_id`);
-
---
--- Index pour la table `ingredients`
---
-ALTER TABLE `ingredients`
-  ADD PRIMARY KEY (`id`);
 
 --
 -- Contraintes pour les tables déchargées
