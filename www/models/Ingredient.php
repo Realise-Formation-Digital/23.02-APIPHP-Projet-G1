@@ -6,12 +6,12 @@ class Ingredient extends Database
 {
 
     private ?int $id;
-    private $type;
-    private $name;
-    private $amountValue;
-    private $amountUnit;
-    private $amountAdd;
-    private $amountAttribute;
+    private ?string $type;
+    private ?string $name;
+    private ?float $amountValue;
+    private ?string $amountUnit;
+    private ?string $amountAdd;
+    private ?string $amountAttribute;
 
 
     public function getId(): ?int
@@ -19,67 +19,67 @@ class Ingredient extends Database
         return $this->id;
     }
 
-    public function setId(?int $id)
+    public function setId(?int $id): void
     {
         $this->id = $id;
     }
 
-    public function getType()
+    public function getType(): ?string
     {
         return $this->type;
     }
 
-    public function setType($type)
+    public function setType(?string $type)
     {
         $this->type = $type;
     }
 
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setName($name)
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
 
-    public function getAmountValue()
+    public function getAmountValue(): ?string
     {
         return $this->amountValue;
     }
 
-    public function setAmountValue($amountValue)
+    public function setAmountValue(?float $amountValue): void
     {
         $this->amountValue = $amountValue;
     }
 
-    public function getAmountUnit()
+    public function getAmountUnit(): ?string
     {
         return $this->amountUnit;
     }
 
-    public function setAmountUnit($amountUnit)
+    public function setAmountUnit(?string $amountUnit)
     {
         $this->amountUnit = $amountUnit;
     }
 
-    public function getAmountAdd()
+    public function getAmountAdd(): ?string
     {
         return $this->amountAdd;
     }
 
-    public function setAmountAdd($amountAdd)
+    public function setAmountAdd(?string $amountAdd)
     {
         $this->amountAdd = $amountAdd;
     }
 
-    public function getAmountAttribute()
+    public function getAmountAttribute(): ?string
     {
         return $this->amountAttribute;
     }
 
-    public function setAmountAttribute($amounAttribute)
+    public function setAmountAttribute(?string $amounAttribute)
     {
         $this->amountAttribute = $amounAttribute;
     }
@@ -135,30 +135,33 @@ class Ingredient extends Database
 
     /**
      * Method to update an ingredient by id in db
-     *
+     * Connect to DB
+     * prepare request
+     * execute statement []
      * @param int $id
      * @return Ingredient
      */
     public function update(int $id, Ingredient $ingredient): Ingredient
     {
-
-        $stmt = $this->pdo->prepare("UPDATE ingredients SET type = :type, name = :name, amount_value = :amountValue, amount_unit = :amountUnit, amount_add = :amountAdd, amount_attribute = :amountAttribute WHERE id = :id");
-    var_dump($ingredient);
-        $stmt->execute(
-            [
-                "type" => $ingredient->getType(),
-                "name" => $ingredient->getName(),
-                "amountValue" => $ingredient->getAmountValue(),
-                "amountUnit" => $ingredient->getAmountUnit(),
-                "amountAdd" => $ingredient->getAmountAdd(),
-                "amountAttribute" => $ingredient->getAmountAttribute(),
-                "id" => $id
-            ]);
+        try{
+            $stmt = $this->pdo->prepare("UPDATE ingredients SET type = :type, name = :name, amount_value = :amountValue, amount_unit = :amountUnit, amount_add = :amountAdd, amount_attribute = :amountAttribute WHERE id = :id");
+            $stmt->execute(
+                [
+                    "type" => $ingredient->getType(),
+                    "name" => $ingredient->getName(),
+                    "amountValue" => $ingredient->getAmountValue(),
+                    "amountUnit" => $ingredient->getAmountUnit(),
+                    "amountAdd" => $ingredient->getAmountAdd(),
+                    "amountAttribute" => $ingredient->getAmountAttribute(),
+                    "id" => $id
+                ]);
             $ingredient->setId($id);
-            var_dump($ingredient);
             return $ingredient;
+        
+        } catch(Exception $e) {
+                throw $e;
+        }
     }
-
     /**
      * Method to delete an ingredient by id in db
      *

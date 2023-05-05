@@ -22,18 +22,25 @@ function search()
 function create(array $body)
 {
 }
-
+/**
+ * function to update ingrediant
+ * 
+ */
 function update(int $id, stdClass $body)
 {
     $ingredient = deserializeBody($body);
     $updatedIngredient =$ingredient->update($id, $ingredient);
-    return serializeBeer($updatedIngredient);
+    return serializeIngredient($updatedIngredient);
 }
 
 function delete(int $id)
 {
 }
-
+/**
+ * with this function we change object for JSON
+ * 
+ * 
+ */
 function serializeIngredient(Ingredient $ingr): array
 {
     return [
@@ -46,14 +53,15 @@ function serializeIngredient(Ingredient $ingr): array
         "amount_attribute" => $ingr->getAmountAttribute()
     ];
 }
-
+/**
+ * with this function we  change JSON for object
+ */
 function deserializeBody(stdClass $body): Ingredient {
     $tempIngredient = new Ingredient();
 
     if(isset($body->id)) {
         $tempIngredient->setId($body->id);
     }
-
 
     if(isset($body->type)) {
         $tempIngredient->setType($body->type);
