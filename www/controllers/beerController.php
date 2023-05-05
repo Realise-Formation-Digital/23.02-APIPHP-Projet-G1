@@ -20,6 +20,10 @@ function search(): array {
     }
     return $serializedBeers;
 }
+
+/**
+ * @throws Exception
+ */
 function create(stdClass $body): array {
     $beer = deserializeBody($body);
     $newBeer = $beer->create($beer);
