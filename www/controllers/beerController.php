@@ -10,7 +10,8 @@ function read(int $id) {
 /**
  * @throws Exception
  */
-function search(): array {
+function search(): array
+{
     $beer = new Beer();
     $beers = $beer->search();
 
@@ -24,14 +25,18 @@ function search(): array {
 /**
  * @throws Exception
  */
-function create(stdClass $body): array {
+function create(stdClass $body): array
+{
     $beer = deserializeBody($body);
     $newBeer = $beer->create($beer);
     return serializeBeer($newBeer);
 }
 
-function update(int $id, array $body) {
-
+function update(int $id, stdClass $body): array
+{
+    $beer = deserializeBody($body);
+    $updatedBeer = $beer->update($id, $beer);
+    return serializeBeer($updatedBeer);
 }
 
 function delete(int $id) {
