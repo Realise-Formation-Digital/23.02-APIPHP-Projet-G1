@@ -3,78 +3,80 @@
 require_once("../models/Ingredient.php");
 require_once("./baseController.php");
 
- /**
-     * Get a single object from the database.
-     * 
-     * @return object
-     */
-function read(int $id)
+/**
+ * Get a single object from the database.
+ *
+ * @param int $id
+ * @return array
+ */
+function read(int $id): array
 {
     $ingr = new Ingredient();
     $ingredient = $ingr->read($id);
-    
+
     return serializeIngredient($ingredient);
 }
+
 //cette function est une partie de SCRUD, Search pour chercher un ingredient dans la table ingredient.
-function search():array
+function search(): array
 {
 
-$ingredient = new Ingredient();
-$ingredients = $ingredient->search();
-$serializedIngredients = [];
-foreach ($ingredients as $ingredient) {
-    $serializedIngredients[] = serializeIngredient($ingredient);
-}
-return $serializedIngredients;
+    $ingredient = new Ingredient();
+    $ingredients = $ingredient->search();
+    $serializedIngredients = [];
+    foreach ($ingredients as $ingredient) {
+        $serializedIngredients[] = serializeIngredient($ingredient);
+    }
+    return $serializedIngredients;
 }
 
 /**
  * Function that create an array of ingredient
+ * @throws Exception
  */
-function create(stdClass $body)
+function create(stdClass $body): array
 {
     /**
      * first decode the JSON format in body
      * Then create object newIngredient with the content of body
-     * Finally return encode in JSON format 
+     * Finally return encode in JSON format
      */
     $ingredient = deserializeBody($body);
     $newIngredient = $ingredient->create($ingredient);
-    return serializeBeer ($newIngredient);
-$serializedIngredients = [];
-foreach ($ingredients as $ingredient) {
-    $serializedIngredients[] = serializeIngredient($ingredient);
+    return serializeIngredient($newIngredient);
 }
-return $serializedIngredients;
-}
+
 /**
  * function to update ingrediant
- * 
+ *
  */
-function update(int $id, stdClass $body)
+function update(int $id, stdClass $body): array
 {
     $ingredient = deserializeBody($body);
-    $updatedIngredient =$ingredient->update($id, $ingredient);
+    $updatedIngredient = $ingredient->update($id, $ingredient);
     return serializeIngredient($updatedIngredient);
 }
 
-function delete(int $id)
+function delete(int $id): array
 {
     $ingredient = new Ingredient();
     $message = $ingredient->delete($id);
     return ["message" => $message];
 }
+
 //avec cette function on a change JSON pour objet
 function serializeIngredient(Ingredient $ingredient): array
 {
     return [
-        'id'=>$ingredient->getId(),
-        "type"=>$ingredient->getType(),
-        "name"=>$ingredient->getName(),
-        "amount_value"=>$ingredient->getAmountValue(),
-        "amount_unit"=>$ingredient->getAmountUnit(),
-        "amount_add"=>$ingredient->getAmountAdd(),
-        "amount_attribute"=>$ingredient->getAmountAttribute()
+        'id' => $ingredient->getId(),
+        "type" => $ingredient->getType(),
+        "name" => $ingredient->getName(),
+        "amount" => [
+            "value" => $ingredient->getAmountValue(),
+            "unit" => $ingredient->getAmountUnit(),
+            "add" => $ingredient->getAmountAdd(),
+            "attribute" => $ingredient->getAmountAttribute()
+        ]
     ];
 }
 
@@ -82,35 +84,34 @@ function serializeIngredient(Ingredient $ingredient): array
 /**
  * with this function we  change JSON for object
  */
-function deserializeBody(stdClass $body): Ingredient {
+function deserializeBody(stdClass $body): Ingredient
+{
     $tempIngredient = new Ingredient();
 
-    if(isset($body->id)) {
-        $tempIngredient->setId($body->id);
-    }
-
-    if(isset($body->type)) {
+    if (isset($body->type)) {
         $tempIngredient->setType($body->type);
     }
 
-    if(isset($body->name)) {
+    if (isset($body->name)) {
         $tempIngredient->setName($body->name);
     }
 
-    if(isset($body->amount_value)) {
-        $tempIngredient->setAmountValue($body->amount_value);
-    }
+    if (isset($body->amount)) {
+        if (isset($body->amount->value)) {
+            $tempIngredient->setAmountValue($body->amount->value);
+        }
 
-    if(isset($body->amount_unit)) {
-        $tempIngredient->setAmountUnit($body->amount_unit);
-    }
+        if (isset($body->amount->unit)) {
+            $tempIngredient->setAmountUnit($body->amount->unit);
+        }
 
-    if(isset($body->amount_add)) {
-        $tempIngredient->setAmountAdd($body->amount_add);
-    }
+        if (isset($body->amount->add)) {
+            $tempIngredient->setAmountAdd($body->amount->add);
+        }
 
-    if(isset($body->amount_attribute)) {
-        $tempIngredient->setAmountAttribute($body->amount_attribute);
+        if (isset($body->amount->attribute)) {
+            $tempIngredient->setAmountAttribute($body->amount->attribute);
+        }
     }
     return $tempIngredient;
 }

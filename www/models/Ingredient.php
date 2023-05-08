@@ -29,7 +29,7 @@ class Ingredient extends Database
         return $this->type;
     }
 
-    public function setType(?string $type)
+    public function setType(?string $type): void
     {
         $this->type = $type;
     }
@@ -59,7 +59,7 @@ class Ingredient extends Database
         return $this->amountUnit;
     }
 
-    public function setAmountUnit(?string $amountUnit)
+    public function setAmountUnit(?string $amountUnit): void
     {
         $this->amountUnit = $amountUnit;
     }
@@ -69,7 +69,7 @@ class Ingredient extends Database
         return $this->amountAdd;
     }
 
-    public function setAmountAdd(?string $amountAdd)
+    public function setAmountAdd(?string $amountAdd): void
     {
         $this->amountAdd = $amountAdd;
     }
@@ -79,7 +79,7 @@ class Ingredient extends Database
         return $this->amountAttribute;
     }
 
-    public function setAmountAttribute(?string $amounAttribute)
+    public function setAmountAttribute(?string $amounAttribute): void
     {
         $this->amountAttribute = $amounAttribute;
     }
@@ -90,7 +90,8 @@ class Ingredient extends Database
      *
      * @return array
      */
-    public function search(): array {
+    public function search(): array
+    {
         try {
             $stmt = $this->pdo->prepare('SELECT * FROM ingredients');
             $stmt->execute();
@@ -125,7 +126,7 @@ class Ingredient extends Database
     public function create(Ingredient $ingredient): Ingredient
     {
         try {
-            $stmt = $this->pdo->prepare("INSERT INTO ingredients (id, type, name, amount_value, amount_unit, amount_add, amount_attribute) VALUES (:id, :type, :name, :amount_value, :amount_unit, :amount_add, :amount_attribute)");
+            $stmt = $this->pdo->prepare("INSERT INTO ingredients (type, name, amount_value, amount_unit, amount_add, amount_attribute) VALUES (:type, :name, :amount_value, :amount_unit, :amount_add, :amount_attribute)");
             $stmt->execute([
                 "type" => $ingredient->getType(),
                 "name" => $ingredient->getName(),
@@ -134,7 +135,7 @@ class Ingredient extends Database
                 "amount_add" => $ingredient->getAmountAdd(),
                 "amount_attribute" => $ingredient->getAmountAttribute(),
             ]);
-            $id =$this->pdo->lastInsertId();
+            $id = $this->pdo->lastInsertId();
             $ingredient->setId($id);
             return $ingredient;
         } catch (Exception $e) {
@@ -167,7 +168,7 @@ class Ingredient extends Database
 
             return $ingredientObj;
         } catch (Exception $e) {
-            echo (['message' => $e->getMessage()]);
+            throw $e;
         }
     }
 
@@ -181,7 +182,7 @@ class Ingredient extends Database
      */
     public function update(int $id, Ingredient $ingredient): Ingredient
     {
-        try{
+        try {
             $stmt = $this->pdo->prepare("UPDATE ingredients SET type = :type, name = :name, amount_value = :amountValue, amount_unit = :amountUnit, amount_add = :amountAdd, amount_attribute = :amountAttribute WHERE id = :id");
             $stmt->execute(
                 [
@@ -195,25 +196,27 @@ class Ingredient extends Database
                 ]);
             $ingredient->setId($id);
             return $ingredient;
-        
-        } catch(Exception $e) {
-                throw $e;
+
+        } catch (Exception $e) {
+            throw $e;
         }
     }
+
     /**
      * Method to delete an ingredient by id in db
      *
      * @param int $id
      * @return string
      */
-    public function delete(int $id): string {
+    public function delete(int $id): string
+    {
         try {
             $stmt = $this->pdo->prepare("DELETE FROM ingredients WHERE id = :id");
             $stmt->execute([
                 "id" => $id
             ]);
             return "L'ingredient d'id $id a été supprimée";
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             throw $e;
         }
     }
