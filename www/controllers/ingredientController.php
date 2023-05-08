@@ -18,11 +18,10 @@ function read(int $id): array
 }
 
 //cette function est une partie de SCRUD, Search pour chercher un ingredient dans la table ingredient.
-function search(): array
+function search($perPage, $page, $sort, $filter): array
 {
-
     $ingredient = new Ingredient();
-    $ingredients = $ingredient->search();
+    $ingredients = $ingredient->search($perPage, $page, $sort, $filter);
     $serializedIngredients = [];
     foreach ($ingredients as $ingredient) {
         $serializedIngredients[] = serializeIngredient($ingredient);

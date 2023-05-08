@@ -15,6 +15,10 @@ try {
     // Récupération des variables.
     $id = isset($query['id']) ? (int) $query['id'] : '';
     $body = isset($body) ? $body : '';
+    $filter = isset($query['filter']) ? (string) $query['filter'] : '%';
+    $sort =  isset($query['sort']) ? (string) $query['sort'] : 'name';
+    $perPage = isset($query['per_page']) ? (int) $query['per_page'] : 10;
+    $page = isset($query['page']) ? (int) $query['page'] : 1;
     $beerId = isset($query['beer_id']) ? (int) $query['beer_id'] : '';
     $ingredientId = isset($query['ingredient_id']) ? (int) $query['ingredient_id'] : '';
 
@@ -24,7 +28,7 @@ try {
             if ($id) {
                 $resultat = read($id);
             } else {
-                $resultat = search();
+                $resultat = search($perPage, $page, $sort, $filter);
             }
             break;
         case 'POST':
