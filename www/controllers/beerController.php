@@ -61,10 +61,28 @@ function delete(int $id): array
     return ["message" => $message];
 }
 
+function addIngredient(int $beerId, int $ingredientId): array {
+    $beer = new Beer();
+    $newBeer = $beer->addIngredient($beerId, $ingredientId);
+    return serializeBeer($newBeer);
+}
+
+function removeIngredient(int $beerId, int $ingredientId): array {
+    $beer = new Beer();
+    $beer = $beer->removeIngredient($beerId, $ingredientId);
+    return serializeBeer($beer);
+}
+
 function serializeBeer(Beer $beer): array
 {
     $year = substr($beer->getFirstBrewed(), 0, 4);
     $month = substr($beer->getFirstBrewed(), 5, 2);
+
+    $ingredients = [];
+    foreach($beer->getIngredients() as $ingredient) {
+        $ingredients[] = serializeIngredient($ingredient);
+    }
+
     return [
         'id' => $beer->getId(),
         'name' => $beer->getName(),
@@ -78,7 +96,8 @@ function serializeBeer(Beer $beer): array
             $beer->getFoodPairing3()
         ],
         "brewers_tips" => $beer->getBrewersTips(),
-        "contribued_by" => $beer->getContribuedBy()
+        "contribued_by" => $beer->getContribuedBy(),
+        "ingredients" => $ingredients,  
     ];
 }
 
@@ -176,5 +195,21 @@ function deserializeBody(stdClass $body): Beer {
 
     }
     return $tempBeer;
+}
+
+//avec cette function on a change JSON pour objet
+function serializeIngredient(Ingredient $ingredient): array
+{
+    return [
+        'id' => $ingredient->getId(),
+        "type" => $ingredient->getType(),
+        "name" => $ingredient->getName(),
+        "amount" => [
+            "value" => $ingredient->getAmountValue(),
+            "unit" => $ingredient->getAmountUnit(),
+            "add" => $ingredient->getAmountAdd(),
+            "attribute" => $ingredient->getAmountAttribute()
+        ]
+    ];
 }
 

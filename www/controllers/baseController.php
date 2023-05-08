@@ -15,6 +15,8 @@ try {
     // Récupération des variables.
     $id = isset($query['id']) ? (int) $query['id'] : '';
     $body = isset($body) ? $body : '';
+    $beerId = isset($query['beer_id']) ? (int) $query['beer_id'] : '';
+    $ingredientId = isset($query['ingredient_id']) ? (int) $query['ingredient_id'] : '';
 
     // Appel des méthodes souhaitées.
     switch($method) {
@@ -26,14 +28,24 @@ try {
             }
             break;
         case 'POST':
-            $resultat = create($body);
+            if (!empty($beerId)) {
+                $resultat = addIngredient($beerId, $ingredientId);
+            } else {
+                $resultat = create($body);
+            }
+        
             break;
         case 'PUT':
         case 'PATCH':
             $resultat = update($id, $body);
             break;
         case 'DELETE':
-            $resultat = delete($id);
+            if (!empty($id)) {
+                $resultat = delete($id);
+            } else {
+                $resultat = removeIngredient($beerId, $ingredientId);
+            }
+            
             break;
     }
 
