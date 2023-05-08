@@ -28,7 +28,7 @@ class Beer extends Database
 
     private ?string $foodPairing3;
 
-    private array $ingredients;
+    private array $ingredients = [];
 
     /**
      * @return int|null
@@ -234,6 +234,20 @@ class Beer extends Database
 
             $beersObj = [];
             foreach ($beers as $beer) {
+                // recover ingredients from beer
+                $stmt = $this->pdo->prepare("SELECT * FROM beer_ingredient WHERE beer_id = :id");
+                $stmt->execute([
+                    'id' => $beer->id
+                ]);
+                $beersIngredients = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+                $ingredients = [];
+                foreach($beersIngredients as $beerIngredient){
+                    $tempIngredient = new Ingredient();
+                    $tempIngredient = $tempIngredient->read($beerIngredient->ingredient_id);
+                    $ingredients[] = $tempIngredient;
+                }
+
                 $tempBeer = new Beer();
                 $tempBeer->setId($beer->id);
                 $tempBeer->setName($beer->name);
@@ -246,8 +260,10 @@ class Beer extends Database
                 $tempBeer->setFoodPairing1($beer->food_pairing1);
                 $tempBeer->setFoodPairing2($beer->food_pairing2);
                 $tempBeer->setFoodPairing3($beer->food_pairing3);
+                $tempBeer->setIngredients($ingredients);
                 $beersObj[] = $tempBeer;
             }
+
             return $beersObj;
         } catch (Exception $e) {
             throw $e;

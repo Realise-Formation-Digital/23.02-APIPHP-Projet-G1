@@ -8,7 +8,7 @@ try {
     header('Content-Type:application/json;charset=utf-8');
 
     // test if body is a correct JSON (when we use body)
-    if (json_last_error() != JSON_ERROR_NONE && $method != "GET" && $method != "DELETE") {
+    if (json_last_error() != JSON_ERROR_NONE && $method != "GET" && $method != "DELETE"  && !isset($query['beer_id'])) {
         throw new Exception("Le body de la requête est mal formé.", 400);
     }
 

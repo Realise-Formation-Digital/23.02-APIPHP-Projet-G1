@@ -78,9 +78,14 @@ function serializeBeer(Beer $beer): array
     $year = substr($beer->getFirstBrewed(), 0, 4);
     $month = substr($beer->getFirstBrewed(), 5, 2);
 
-    $ingredients = [];
+    $maltIngredients = [];
+    $hopsIngredients = [];
     foreach($beer->getIngredients() as $ingredient) {
-        $ingredients[] = serializeIngredient($ingredient);
+        if ($ingredient->getType() == "malt") {
+            $maltIngredients[] = serializeIngredient($ingredient);
+        } else {
+            $hopsIngredients[] = serializeIngredient($ingredient);
+        }
     }
 
     return [
@@ -97,7 +102,7 @@ function serializeBeer(Beer $beer): array
         ],
         "brewers_tips" => $beer->getBrewersTips(),
         "contribued_by" => $beer->getContribuedBy(),
-        "ingredients" => $ingredients,  
+        "ingredients" => ["malt" => $maltIngredients, "hops" => $hopsIngredients]
     ];
 }
 
@@ -202,7 +207,6 @@ function serializeIngredient(Ingredient $ingredient): array
 {
     return [
         'id' => $ingredient->getId(),
-        "type" => $ingredient->getType(),
         "name" => $ingredient->getName(),
         "amount" => [
             "value" => $ingredient->getAmountValue(),
