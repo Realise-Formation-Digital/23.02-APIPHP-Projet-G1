@@ -8,7 +8,7 @@ try {
     header('Content-Type:application/json;charset=utf-8');
 
     // test if body is a correct JSON (when we use body)
-    if (json_last_error() != JSON_ERROR_NONE && $method != "GET" && $method != "DELETE") {
+    if (json_last_error() != JSON_ERROR_NONE && $method != "GET" && $method != "DELETE"  && !isset($query['beer_id'])) {
         throw new Exception("Le body de la requête est mal formé.", 400);
     }
 
@@ -19,6 +19,8 @@ try {
     $sort =  isset($query['sort']) ? (string) $query['sort'] : 'name';
     $perPage = isset($query['per_page']) ? (int) $query['per_page'] : 10;
     $page = isset($query['page']) ? (int) $query['page'] : 1;
+    $beerId = isset($query['beer_id']) ? (int) $query['beer_id'] : '';
+    $ingredientId = isset($query['ingredient_id']) ? (int) $query['ingredient_id'] : '';
 
     // Appel des méthodes souhaitées.
     switch($method) {
@@ -30,14 +32,24 @@ try {
             }
             break;
         case 'POST':
-            $resultat = create($body);
+            if (!empty($beerId)) {
+                $resultat = addIngredient($beerId, $ingredientId);
+            } else {
+                $resultat = create($body);
+            }
+        
             break;
         case 'PUT':
         case 'PATCH':
             $resultat = update($id, $body);
             break;
         case 'DELETE':
-            $resultat = delete($id);
+            if (!empty($id)) {
+                $resultat = delete($id);
+            } else {
+                $resultat = removeIngredient($beerId, $ingredientId);
+            }
+            
             break;
     }
 

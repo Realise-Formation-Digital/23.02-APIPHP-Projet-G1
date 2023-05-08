@@ -1,6 +1,7 @@
 <?php
 
 require_once("../models/Database.php");
+require_once("../models/Ingredient.php");
 
 class Beer extends Database
 {
@@ -26,6 +27,8 @@ class Beer extends Database
     private ?string $foodPairing2;
 
     private ?string $foodPairing3;
+
+    private array $ingredients = [];
 
     /**
      * @return int|null
@@ -203,6 +206,19 @@ class Beer extends Database
         $this->foodPairing3 = $foodPairing3;
     }
 
+
+    public function getIngredients(): array
+    {
+        return $this->ingredients;
+    }
+
+   
+    public function setIngredients(array $ingredients): void
+    {
+        $this->ingredients = $ingredients;
+    }
+
+
     /**
      * Method to get all beers from db
      *
@@ -218,6 +234,20 @@ class Beer extends Database
 
             $beersObj = [];
             foreach ($beers as $beer) {
+                // recover ingredients from beer
+                $stmt = $this->pdo->prepare("SELECT * FROM beer_ingredient WHERE beer_id = :id");
+                $stmt->execute([
+                    'id' => $beer->id
+                ]);
+                $beersIngredients = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+                $ingredients = [];
+                foreach($beersIngredients as $beerIngredient){
+                    $tempIngredient = new Ingredient();
+                    $tempIngredient = $tempIngredient->read($beerIngredient->ingredient_id);
+                    $ingredients[] = $tempIngredient;
+                }
+
                 $tempBeer = new Beer();
                 $tempBeer->setId($beer->id);
                 $tempBeer->setName($beer->name);
@@ -230,8 +260,10 @@ class Beer extends Database
                 $tempBeer->setFoodPairing1($beer->food_pairing1);
                 $tempBeer->setFoodPairing2($beer->food_pairing2);
                 $tempBeer->setFoodPairing3($beer->food_pairing3);
+                $tempBeer->setIngredients($ingredients);
                 $beersObj[] = $tempBeer;
             }
+
             return $beersObj;
         } catch (Exception $e) {
             throw $e;
@@ -244,7 +276,8 @@ class Beer extends Database
      * @param Beer $beer
      * @return Beer
      */
-    public function create(Beer $beer): Beer {
+    public function create(Beer $beer): Beer
+    {
         try {
             $stmt = $this->pdo->prepare("INSERT INTO beers (name, tagline, first_brewed, description, image_url, brewers_tips, contribued_by, food_pairing1, food_pairing2, food_pairing3) VALUES (:name, :tagline, :first_brewed, :description, :image_url, :brewers_tips, :contribued_by, :food_pairing1, :food_pairing2, :food_pairing3)");
             $stmt->execute([
@@ -262,7 +295,7 @@ class Beer extends Database
             $id = $this->pdo->lastInsertId();
             $beer->setId($id);
             return $beer;
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             throw $e;
         }
     }
@@ -276,6 +309,7 @@ class Beer extends Database
     public function read(int $id): Beer
     {
         try {
+           
             $stmt = $this->pdo->prepare("SELECT * FROM beers WHERE id = :id");
             $stmt->execute([
                 'id' => $id
@@ -285,6 +319,19 @@ class Beer extends Database
             //test if beer exists
             if (!$beer) {
                 throw new Exception("La bière d'id $id n'existe pas", 400);
+            }
+
+            $stmt = $this->pdo->prepare("SELECT * FROM beer_ingredient WHERE beer_id = :id");
+            $stmt->execute([
+                'id' => $id
+            ]);
+            $beersIngredients = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+            $ingredients = [];
+            foreach($beersIngredients as $beerIngredient){
+                $tempIngredient = new Ingredient();
+                $tempIngredient = $tempIngredient->read($beerIngredient->ingredient_id);
+                $ingredients[] = $tempIngredient;
             }
 
             $beerObj = new Beer();
@@ -299,6 +346,7 @@ class Beer extends Database
             $beerObj->setFoodPairing1($beer->food_pairing1);
             $beerObj->setFoodPairing2($beer->food_pairing2);
             $beerObj->setFoodPairing3($beer->food_pairing3);
+            $beerObj->setIngredients($ingredients);
 
             return $beerObj;
         } catch (Exception $e) {
@@ -314,7 +362,8 @@ class Beer extends Database
      * @return Beer
      * @throws Exception
      */
-    public function update(int $id, Beer $beer): Beer {
+    public function update(int $id, Beer $beer): Beer
+    {
         //test if beer exists
         $this->read($id);
 
@@ -342,7 +391,7 @@ class Beer extends Database
 
             $beer->setId($id);
             return $beer;
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             throw $e;
         }
     }
@@ -354,7 +403,8 @@ class Beer extends Database
      * @return string
      * @throws Exception
      */
-    public function delete(int $id): string {
+    public function delete(int $id): string
+    {
         //test if beer exists
         $this->read($id);
 
@@ -371,7 +421,47 @@ class Beer extends Database
             }
 
             return "La bière d'id $id été supprimée";
-        } catch(Exception $e) {
+        } catch (Exception $e) {
+            throw $e;
+        }
+    }
+    /**Foreign key -add ingredient to table beer */
+    public function addIngredient(int $beerId, int $ingredientId): Beer
+    {
+        try {
+            $this->read($beerId);
+            $ingredient = new Ingredient();
+            $ingredient->read($ingredientId);
+
+            $stmt = $this->pdo->prepare("INSERT INTO beer_ingredient (beer_id, ingredient_id) VALUES (:beerId, :ingredientId)");
+            $stmt->execute([
+                "beerId" => $beerId,
+                "ingredientId" => $ingredientId
+            ]);
+
+            return $this->read($beerId);
+            
+        } catch (Exception $e) {
+            throw $e;
+        }
+    }
+
+    public function removeIngredient(int $beerId, int $ingredientId): Beer
+    {
+        try {
+            $this->read($beerId);
+            $ingredient = new Ingredient();
+            $ingredient->read($ingredientId);
+
+            $stmt = $this->pdo->prepare("DELETE FROM beer_ingredient WHERE beer_id = :beerId AND ingredient_id = :ingredientId");
+            $stmt->execute([
+                "beerId" => $beerId,
+                "ingredientId" => $ingredientId
+            ]);
+
+            return $this->read($beerId);
+            
+        } catch (Exception $e) {
             throw $e;
         }
     }
