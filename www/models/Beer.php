@@ -256,7 +256,7 @@ class Beer extends Database
                 $tempBeer->setDescription($beer->description);
                 $tempBeer->setImageUrl($beer->image_url);
                 $tempBeer->setBrewersTips($beer->brewers_tips);
-                $tempBeer->setContributedBy($beer->contribued_by);
+                $tempBeer->setContributedBy($beer->contributed_by);
                 $tempBeer->setFoodPairing1($beer->food_pairing1);
                 $tempBeer->setFoodPairing2($beer->food_pairing2);
                 $tempBeer->setFoodPairing3($beer->food_pairing3);
@@ -279,7 +279,7 @@ class Beer extends Database
     public function create(Beer $beer): Beer
     {
         try {
-            $stmt = $this->pdo->prepare("INSERT INTO beers (name, tagline, first_brewed, description, image_url, brewers_tips, contribued_by, food_pairing1, food_pairing2, food_pairing3) VALUES (:name, :tagline, :first_brewed, :description, :image_url, :brewers_tips, :contribued_by, :food_pairing1, :food_pairing2, :food_pairing3)");
+            $stmt = $this->pdo->prepare("INSERT INTO beers (name, tagline, first_brewed, description, image_url, brewers_tips, contributed_by, food_pairing1, food_pairing2, food_pairing3) VALUES (:name, :tagline, :first_brewed, :description, :image_url, :brewers_tips, :contributed_by, :food_pairing1, :food_pairing2, :food_pairing3)");
             $stmt->execute([
                 "name" => $beer->getName(),
                 "tagline" => $beer->getTagline(),
@@ -287,7 +287,7 @@ class Beer extends Database
                 "description" => $beer->getDescription(),
                 "image_url" => $beer->getImageUrl(),
                 "brewers_tips" => $beer->getBrewersTips(),
-                "contribued_by" => $beer->getContributedBy(),
+                "contributed_by" => $beer->getContributedBy(),
                 "food_pairing1" => $beer->getFoodPairing1(),
                 "food_pairing2" => $beer->getFoodPairing2(),
                 "food_pairing3" => $beer->getFoodPairing3(),
@@ -342,7 +342,7 @@ class Beer extends Database
             $beerObj->setDescription($beer->description);
             $beerObj->setImageUrl($beer->image_url);
             $beerObj->setBrewersTips($beer->brewers_tips);
-            $beerObj->setContributedBy($beer->contribued_by);
+            $beerObj->setContributedBy($beer->contributed_by);
             $beerObj->setFoodPairing1($beer->food_pairing1);
             $beerObj->setFoodPairing2($beer->food_pairing2);
             $beerObj->setFoodPairing3($beer->food_pairing3);
@@ -368,7 +368,7 @@ class Beer extends Database
         $this->read($id);
 
         try {
-            $stmt = $this->pdo->prepare("UPDATE beers SET name = :name, tagline = :tagline, first_brewed = :first_brewed, description = :description, image_url = :image_url, brewers_tips = :brewers_tips, contribued_by = :contribued_by, food_pairing1 = :food_pairing1, food_pairing2 = :food_pairing2, food_pairing3 = :food_pairing3 WHERE id = :id");
+            $stmt = $this->pdo->prepare("UPDATE beers SET name = :name, tagline = :tagline, first_brewed = :first_brewed, description = :description, image_url = :image_url, brewers_tips = :brewers_tips, contributed_by = :contributed_by, food_pairing1 = :food_pairing1, food_pairing2 = :food_pairing2, food_pairing3 = :food_pairing3 WHERE id = :id");
             $stmt->execute([
                 "name" => $beer->getName(),
                 "tagline" => $beer->getTagline(),
@@ -376,7 +376,7 @@ class Beer extends Database
                 "description" => $beer->getDescription(),
                 "image_url" => $beer->getImageUrl(),
                 "brewers_tips" => $beer->getBrewersTips(),
-                "contribued_by" => $beer->getContributedBy(),
+                "contributed_by" => $beer->getContributedBy(),
                 "food_pairing1" => $beer->getFoodPairing1(),
                 "food_pairing2" => $beer->getFoodPairing2(),
                 "food_pairing3" => $beer->getFoodPairing3(),

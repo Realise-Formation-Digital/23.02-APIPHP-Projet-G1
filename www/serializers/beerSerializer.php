@@ -28,7 +28,7 @@ function serializeBeer(Beer $beer): array
             $beer->getFoodPairing3()
         ],
         "brewers_tips" => $beer->getBrewersTips(),
-        "contribued_by" => $beer->getContributedBy(),
+        "contributed_by" => $beer->getContributedBy(),
         "ingredients" => ["malt" => $maltIngredients, "hops" => $hopsIngredients]
     ];
 }

@@ -30,7 +30,7 @@ CREATE TABLE `beers` (
   `description` varchar(250) NOT NULL,
   `image_url` varchar(500) NOT NULL,
   `brewers_tips` varchar(500) NOT NULL,
-  `contribued_by` varchar(50) NOT NULL,
+  `contributed_by` varchar(50) NOT NULL,
   `food_pairing1` varchar(50) DEFAULT NULL,
   `food_pairing2` varchar(50) DEFAULT NULL,
   `food_pairing3` varchar(50) DEFAULT NULL,
