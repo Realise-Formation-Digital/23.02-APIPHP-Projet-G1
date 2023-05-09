@@ -40,14 +40,18 @@ function deserializeIngredient(stdClass $body): Ingredient
         if (isset($body->amount->unit)) {
             $tempIngredient->setAmountUnit($body->amount->unit);
         }
+    }
 
-        if (isset($body->amount->add)) {
-            $tempIngredient->setAmountAdd($body->amount->add);
-        }
+    if (isset($body->add)) {
+        $tempIngredient->setAmountAdd($body->add);
+    } else {
+        $tempIngredient->setAmountAdd(null);
+    }
 
-        if (isset($body->amount->attribute)) {
-            $tempIngredient->setAmountAttribute($body->amount->attribute);
-        }
+    if (isset($body->attribute)) {
+        $tempIngredient->setAmountAttribute($body->attribute);
+    } else {
+        $tempIngredient->setAmountAttribute(null);
     }
     return $tempIngredient;
 }

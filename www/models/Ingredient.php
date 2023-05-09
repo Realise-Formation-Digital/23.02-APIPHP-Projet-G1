@@ -228,4 +228,24 @@ class Ingredient extends Database
             throw $e;
         }
     }
+
+    public function ingredientExistByNameType(string $name, string $type): bool|Ingredient {
+        try {
+            $stmt = $this->pdo->prepare("SELECT * FROM ingredients WHERE name = :name AND type = :type");
+            $stmt->execute([
+                "name" => $name,
+                "type" => $type
+            ]);
+            $ingredient = $stmt->fetch(PDO::FETCH_OBJ);
+
+            if (!$ingredient) {
+                return false;
+            } else {
+                return $this->read($ingredient->id);
+            }
+
+        } catch (Exception $e) {
+            throw $e;
+        }
+    }
 }

@@ -1,6 +1,6 @@
 <?php
 
-require_once("../config.php");
+require_once("../db/connection.php");
 
 class Database
 {
@@ -8,7 +8,7 @@ class Database
 
     public function __construct() {
         try {
-            $this->pdo = new PDO("mysql:host=" . HOST_NAME . ";dbname=" . DB_NAME, USER_NAME, PASSWORD);
+            $this->pdo = Connection::getConnection();
         } catch(Exception $e) {
             throw $e;
         }

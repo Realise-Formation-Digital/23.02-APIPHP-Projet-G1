@@ -28,7 +28,7 @@ function serializeBeer(Beer $beer): array
             $beer->getFoodPairing3()
         ],
         "brewers_tips" => $beer->getBrewersTips(),
-        "contribued_by" => $beer->getContribuedBy(),
+        "contribued_by" => $beer->getContributedBy(),
         "ingredients" => ["malt" => $maltIngredients, "hops" => $hopsIngredients]
     ];
 }
@@ -44,15 +44,17 @@ function deserializeBeer(stdClass $body): Beer
         $tempBeer->setName($body->name);
 
         if (strlen($body->name) > 25) {
-            throw new Exception("Le nom de la bière ne peut pas avoir plus de 25 caractères", 400);
+            $tempBeer->setName(substr($body->description, 0, 25));
         }
+    } else {
+        throw new Exception("Le nom ne peut pas être nul.", 400);
     }
 
     if (isset($body->tagline)) {
         $tempBeer->setTagline($body->tagline);
 
         if (strlen($body->tagline) > 50) {
-            throw new Exception("Le tagline de la bière ne peut pas avoir plus de 50 caractères", 400);
+            $tempBeer->setTagline(substr($body->description, 0, 50));
         }
     } else {
         throw new Exception("Le tagline ne peut pas être nul.", 400);
@@ -77,7 +79,7 @@ function deserializeBeer(stdClass $body): Beer
         $tempBeer->setDescription($body->description);
 
         if (strlen($body->description) > 250) {
-            throw new Exception("La description de la bière ne peut pas avoir plus de 250 caractères", 400);
+            $tempBeer->setDescription(substr($body->description, 0, 250));
         }
     } else {
         throw new Exception("La description ne peut pas être nulle.", 400);
@@ -103,10 +105,10 @@ function deserializeBeer(stdClass $body): Beer
         throw new Exception("Le brewer tips ne peut pas être nul.", 400);
     }
 
-    if (isset($body->contribued_by)) {
-        $tempBeer->setContribuedBy($body->contribued_by);
+    if (isset($body->contributed_by)) {
+        $tempBeer->setContributedBy($body->contributed_by);
 
-        if (strlen($body->contribued_by) > 50) {
+        if (strlen($body->contributed_by) > 50) {
             throw new Exception("La contribution de la bière ne peut pas avoir plus de 50 caractères", 400);
         }
     } else {
@@ -116,14 +118,26 @@ function deserializeBeer(stdClass $body): Beer
     if (isset($body->food_pairing)) {
         if (isset($body->food_pairing[0])) {
             $tempBeer->setFoodPairing1($body->food_pairing[0]);
+
+            if (strlen($body->food_pairing[0]) > 50) {
+                $tempBeer->setFoodPairing1(substr($body->food_pairing[0], 0, 50));
+            }
         }
 
         if (isset($body->food_pairing[1])) {
             $tempBeer->setFoodPairing2($body->food_pairing[1]);
+
+            if (strlen($body->food_pairing[1]) > 50) {
+                $tempBeer->setFoodPairing2(substr($body->food_pairing[1], 0, 50));
+            }
         }
 
         if (isset($body->food_pairing[2])) {
             $tempBeer->setFoodPairing3($body->food_pairing[2]);
+
+            if (strlen($body->food_pairing[2]) > 50) {
+                $tempBeer->setFoodPairing3(substr($body->food_pairing[2], 0, 50));
+            }
         }
 
     }
