@@ -34,7 +34,8 @@ CREATE TABLE `beers` (
   `food_pairing1` varchar(50) DEFAULT NULL,
   `food_pairing2` varchar(50) DEFAULT NULL,
   `food_pairing3` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  CONSTRAINT `unique_beer_name` UNIQUE (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -62,7 +63,8 @@ CREATE TABLE `ingredients` (
   `amount_unit` varchar(15) NOT NULL,
   `amount_add` varchar(15) DEFAULT NULL,
   `amount_attribute` varchar(15) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  CONSTRAINT `unique_ingredients_name` UNIQUE (`name`, `type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -81,5 +83,6 @@ ALTER TABLE `beer_ingredient`
 --
 ALTER TABLE `beer_ingredient`
   ADD CONSTRAINT `beer_ingredient_ibfk_1` FOREIGN KEY (`ingredient_id`) REFERENCES `ingredients` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `beer_ingredient_ibfk_2` FOREIGN KEY (`beer_id`) REFERENCES `beers` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `beer_ingredient_ibfk_2` FOREIGN KEY (`beer_id`) REFERENCES `beers` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `unique_beer_ingredient` UNIQUE (`ingredient_id`, `beer_id`);
 COMMIT;
