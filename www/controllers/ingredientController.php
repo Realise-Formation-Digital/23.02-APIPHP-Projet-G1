@@ -40,7 +40,7 @@ function search($perPage, $page, $sort, $filter): array
     }
 
     if ($perPage <= 0) {
-        throw new Exception("Il doit y avoir au moins une bière par page", 400);
+        throw new Exception("Il doit y avoir au moins un ingrédient par page", 400);
     }
 
     if ($sort != "name") {

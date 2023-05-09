@@ -20,16 +20,28 @@ function read(int $id)
 /**
  * @throws Exception
  */
-function search(): array
+function search($perPage, $page, $sort, $filter): array 
 {
+    if ($page <= 0) {
+        throw new Exception("La page commence à 1.", 400);
+    }
+
+    if ($perPage <= 0) {
+        throw new Exception("Il doit y avoir au moins une bière par page", 400);
+    }
+
+    if ($sort != "name") {
+        throw new Exception("On ne peut trier que par nom (name).", 400);
+    }
+
     $beer = new Beer();
-    $beers = $beer->search();
+    $beers = $beer->search($perPage, $page, $sort, $filter);
 
     $serializedBeers = [];
     foreach ($beers as $beer) {
         $serializedBeers[] = serializeBeer($beer);
     }
-    return $serializedBeers;
+    return $serializedBeers;   
 }
 
 /**
