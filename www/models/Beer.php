@@ -275,10 +275,17 @@ class Beer extends Database
      *
      * @param Beer $beer
      * @return Beer
+     * @throws Exception
      */
     public function create(Beer $beer): Beer
     {
         try {
+            //test if beer name exists (unique)
+            $beerExist = $this->beerExistByName($beer->getName());
+            if ($beerExist) {
+                throw new Exception("La bière avec ce nom existe déjà.", 400);
+            }
+
             $stmt = $this->pdo->prepare("INSERT INTO beers (name, tagline, first_brewed, description, image_url, brewers_tips, contributed_by, food_pairing1, food_pairing2, food_pairing3) VALUES (:name, :tagline, :first_brewed, :description, :image_url, :brewers_tips, :contributed_by, :food_pairing1, :food_pairing2, :food_pairing3)");
             $stmt->execute([
                 "name" => $beer->getName(),
@@ -305,6 +312,7 @@ class Beer extends Database
      *
      * @param int $id
      * @return Beer
+     * @throws Exception
      */
     public function read(int $id): Beer
     {

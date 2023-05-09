@@ -27,7 +27,7 @@ function deserializeIngredient(stdClass $body): Ingredient
     if (isset($body->type)) {
         $tempIngredient->setType($body->type);
 
-        if ($body->type != "malt" || $body->type != "hops") {
+        if ($body->type != "malt" && $body->type != "hops") {
             throw new Exception("Le type ne peut être que malt ou hops.", 400);
         }
     } else {
