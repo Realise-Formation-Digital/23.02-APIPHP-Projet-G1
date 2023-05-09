@@ -44,7 +44,7 @@ function deserializeBeer(stdClass $body): Beer
         $tempBeer->setName($body->name);
 
         if (strlen($body->name) > 25) {
-            $tempBeer->setName(substr($body->description, 0, 25));
+            $tempBeer->setName(substr($body->name, 0, 25));
         }
     } else {
         throw new Exception("Le nom ne peut pas être nul.", 400);
@@ -54,7 +54,7 @@ function deserializeBeer(stdClass $body): Beer
         $tempBeer->setTagline($body->tagline);
 
         if (strlen($body->tagline) > 50) {
-            $tempBeer->setTagline(substr($body->description, 0, 50));
+            $tempBeer->setTagline(substr($body->tagline, 0, 50));
         }
     } else {
         throw new Exception("Le tagline ne peut pas être nul.", 400);
@@ -152,9 +152,9 @@ function serializeBeerIngredient(Ingredient $ingredient): array
         "name" => $ingredient->getName(),
         "amount" => [
             "value" => $ingredient->getAmountValue(),
-            "unit" => $ingredient->getAmountUnit(),
-            "add" => $ingredient->getAmountAdd(),
-            "attribute" => $ingredient->getAmountAttribute()
-        ]
+            "unit" => $ingredient->getAmountUnit()
+        ],
+        "add" => $ingredient->getAmountAdd(),
+        "attribute" => $ingredient->getAmountAttribute()
     ];
 }

@@ -62,8 +62,8 @@ function create(array $body): array
 
         }
 
-        foreach($beerStdObj->ingredients->hops as $ingredient) {
-            $ingredient->type = "hops";
+        foreach($beerStdObj->ingredients->hops as $ingredientStdObj) {
+            $ingredientStdObj->type = "hops";
 
             //test if ingredient exists
             $ingredient = deserializeIngredient($ingredientStdObj);
