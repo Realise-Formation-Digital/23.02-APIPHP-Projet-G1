@@ -93,17 +93,14 @@ class Ingredient extends Database
     public function search($perPage, $page, $sort, $filter): array
     {
         try {
-            
-            $stmt = $this->pdo->prepare('SELECT * FROM ingredients WHERE type LIKE :type ORDER BY :sort LIMIT :perPage OFFSET :page');
+            $stmt = $this->pdo->prepare("SELECT * FROM ingredients WHERE type LIKE :type ORDER BY $sort ASC LIMIT :perPage OFFSET :page");
             $stmt->bindValue("perPage", $perPage, PDO::PARAM_INT);
             $stmt->bindValue("page", $perPage * ($page-1), PDO::PARAM_INT);
-            $stmt->bindValue("sort", $sort);
             $stmt->bindValue("type", $filter);
 
             $stmt->execute();
-           
+
             $ingredients = $stmt->fetchAll(PDO::FETCH_OBJ);
-            //var_dump($ingredients);
 
             $ingredientsObj = [];
             foreach ($ingredients as $ingredient) {
