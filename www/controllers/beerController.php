@@ -19,16 +19,16 @@ function read(int $id)
 /**
  * @throws Exception
  */
-function search(): array
+function search($perPage, $page, $sort, $filter): array 
 {
     $beer = new Beer();
-    $beers = $beer->search();
+    $beers = $beer->search($perPage, $page, $sort, $filter);
 
     $serializedBeers = [];
     foreach ($beers as $beer) {
         $serializedBeers[] = serializeBeer($beer);
     }
-    return $serializedBeers;
+    return $serializedBeers;   
 }
 
 /**

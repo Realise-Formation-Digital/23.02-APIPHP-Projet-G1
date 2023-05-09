@@ -56,6 +56,13 @@ try {
     echo json_encode($resultat);
 
 } catch(Exception $e) {
-    http_response_code($e->getCode());
+   
+    if (gettype($e->getCode()) == "string") {
+        $codeError = 500;
+    } else {
+        $codeError = $e->getCode();
+    }
+
+    http_response_code($codeError);
     echo json_encode(['message' => $e->getMessage()]);
 }

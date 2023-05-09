@@ -103,7 +103,7 @@ class Ingredient extends Database
             $stmt->execute();
            
             $ingredients = $stmt->fetchAll(PDO::FETCH_OBJ);
-            //var_dump($ingredients);
+           
 
             $ingredientsObj = [];
             foreach ($ingredients as $ingredient) {

@@ -2,6 +2,7 @@
 
 require_once("../models/Database.php");
 require_once("../models/Ingredient.php");
+require_once("../controllers/beerController.php");
 
 class Beer extends Database
 {
@@ -29,7 +30,7 @@ class Beer extends Database
     private ?string $foodPairing3;
 
     private array $ingredients = [];
-
+    
     /**
      * @return int|null
      */
@@ -45,6 +46,7 @@ class Beer extends Database
     {
         $this->id = $id;
     }
+   
 
     /**
      * @return string|null
@@ -225,11 +227,16 @@ class Beer extends Database
      * @return array
      * @throws Exception
      */
-    public function search(): array
+    public function search($perPage, $page, $sort, $filter): array
     {
         try {
-            $stmt = $this->pdo->prepare("SELECT * FROM beers");
+            //Filter : recover beer with ingredients, order by asc,
+            $stmt = $this->pdo->prepare ("SELECT * FROM beers LEFT JOIN beer_ingredient ON beers.id = beer_ingredient.ingredient_id JOIN ingredients ON ingredients.id = beer_ingredient.ingredient_id WHERE ingredients.name = :filter ORDER BY beers.$sort LIMIT :perPage OFFSET :page");
+            $stmt->bindValue("perPage", $perPage, PDO::PARAM_INT);
+            $stmt->bindValue("page", $perPage *($page-1), PDO::PARAM_INT);
+            $stmt->bindValue("filter", $filter);
             $stmt->execute();
+
             $beers = $stmt->fetchAll(PDO::FETCH_OBJ);
 
             $beersObj = [];
@@ -240,7 +247,6 @@ class Beer extends Database
                     'id' => $beer->id
                 ]);
                 $beersIngredients = $stmt->fetchAll(PDO::FETCH_OBJ);
-
                 $ingredients = [];
                 foreach($beersIngredients as $beerIngredient){
                     $tempIngredient = new Ingredient();
