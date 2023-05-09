@@ -31,6 +31,22 @@ function read(int $id): array
  */
 function search($perPage, $page, $sort, $filter): array
 {
+    if ($filter != "malt" && $filter != "hops") {
+        throw new Exception("Le type ne peut être que malt ou hops.", 400);
+    }
+
+    if ($page <= 0) {
+        throw new Exception("La page commence à 1.", 400);
+    }
+
+    if ($perPage <= 0) {
+        throw new Exception("Il doit y avoir au moins une bière par page", 400);
+    }
+
+    if ($sort != "name") {
+        throw new Exception("On ne peut trier que par nom (name).", 400);
+    }
+
     $ingredient = new Ingredient();
     $ingredients = $ingredient->search($perPage, $page, $sort, $filter);
     $serializedIngredients = [];

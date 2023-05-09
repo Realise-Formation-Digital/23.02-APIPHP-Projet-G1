@@ -93,17 +93,14 @@ class Ingredient extends Database
     public function search($perPage, $page, $sort, $filter): array
     {
         try {
-            
-            $stmt = $this->pdo->prepare('SELECT * FROM ingredients WHERE type LIKE :type ORDER BY :sort LIMIT :perPage OFFSET :page');
+            $stmt = $this->pdo->prepare("SELECT * FROM ingredients WHERE type LIKE :type ORDER BY $sort ASC LIMIT :perPage OFFSET :page");
             $stmt->bindValue("perPage", $perPage, PDO::PARAM_INT);
             $stmt->bindValue("page", $perPage * ($page-1), PDO::PARAM_INT);
-            $stmt->bindValue("sort", $sort);
             $stmt->bindValue("type", $filter);
 
             $stmt->execute();
-           
+
             $ingredients = $stmt->fetchAll(PDO::FETCH_OBJ);
-            //var_dump($ingredients);
 
             $ingredientsObj = [];
             foreach ($ingredients as $ingredient) {
@@ -134,6 +131,12 @@ class Ingredient extends Database
     public function create(Ingredient $ingredient): Ingredient
     {
         try {
+            //test if ingredient name exists (unique)
+            $ingredientExist = $this->ingredientExistByNameType($ingredient->getName(), $ingredient->getType());
+            if ($ingredientExist) {
+                throw new Exception("L'ingrédient avec ce nom existe déjà.", 400);
+            }
+
             $stmt = $this->pdo->prepare("INSERT INTO ingredients (type, name, amount_value, amount_unit, amount_add, amount_attribute) VALUES (:type, :name, :amount_value, :amount_unit, :amount_add, :amount_attribute)");
             $stmt->execute([
                 "type" => $ingredient->getType(),
@@ -165,6 +168,11 @@ class Ingredient extends Database
             $stmt->execute(['id' => $id]);
             $ingredient = $stmt->fetch(PDO::FETCH_OBJ);
 
+            //test if beer exists
+            if (!$ingredient) {
+                throw new Exception("L'ingrédient d'id $id n'existe pas", 400);
+            }
+
             $ingredientObj = new Ingredient();
             $ingredientObj->setId($ingredient->id);
             $ingredientObj->setName($ingredient->name);
@@ -191,6 +199,9 @@ class Ingredient extends Database
     public function update(int $id, Ingredient $ingredient): Ingredient
     {
         try {
+            //test if ingredient exists
+            $this->read($id);
+
             $stmt = $this->pdo->prepare("UPDATE ingredients SET type = :type, name = :name, amount_value = :amountValue, amount_unit = :amountUnit, amount_add = :amountAdd, amount_attribute = :amountAttribute WHERE id = :id");
             $stmt->execute(
                 [
@@ -219,6 +230,9 @@ class Ingredient extends Database
     public function delete(int $id): string
     {
         try {
+            //test if ingredient exists
+            $this->read($id);
+
             $stmt = $this->pdo->prepare("DELETE FROM ingredients WHERE id = :id");
             $stmt->execute([
                 "id" => $id
