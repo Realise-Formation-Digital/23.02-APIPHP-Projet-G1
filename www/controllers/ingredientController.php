@@ -36,7 +36,7 @@ function search($perPage, $page, $sort, $filter): array
     }
 
     if ($page <= 0) {
-        throw new Exception("La page commence à 0.", 400);
+        throw new Exception("La page commence à 1.", 400);
     }
 
     if ($perPage <= 0) {
