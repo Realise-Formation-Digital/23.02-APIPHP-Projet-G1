@@ -2,7 +2,6 @@
 
 require_once("../models/Database.php");
 require_once("../models/Ingredient.php");
-require_once("../controllers/beerController.php");
 
 class Beer extends Database
 {
@@ -231,7 +230,7 @@ class Beer extends Database
     {
         try {
             //Filter : recover beer with ingredients, order by asc,
-            $stmt = $this->pdo->prepare ("SELECT * FROM beers LEFT JOIN beer_ingredient ON beers.id = beer_ingredient.ingredient_id JOIN ingredients ON ingredients.id = beer_ingredient.ingredient_id WHERE ingredients.name = :filter ORDER BY beers.$sort LIMIT :perPage OFFSET :page");
+            $stmt = $this->pdo->prepare ("SELECT * FROM beers LEFT JOIN beer_ingredient ON beers.id = beer_ingredient.ingredient_id JOIN ingredients ON ingredients.id = beer_ingredient.ingredient_id WHERE ingredients.name LIKE :filter ORDER BY beers.$sort LIMIT :perPage OFFSET :page");
             $stmt->bindValue("perPage", $perPage, PDO::PARAM_INT);
             $stmt->bindValue("page", $perPage *($page-1), PDO::PARAM_INT);
             $stmt->bindValue("filter", $filter);
