@@ -429,15 +429,27 @@ class Beer extends Database
     public function addIngredient(int $beerId, int $ingredientId): Beer
     {
         try {
+            //test if ingredient and beer exist
             $this->read($beerId);
             $ingredient = new Ingredient();
             $ingredient->read($ingredientId);
 
-            $stmt = $this->pdo->prepare("INSERT INTO beer_ingredient (beer_id, ingredient_id) VALUES (:beerId, :ingredientId)");
+            // test if beer has ingredient
+            $stmt = $this->pdo->prepare("SELECT * FROM beer_ingredient WHERE beer_id = :beer_id AND ingredient_id = :ingredient_id");
             $stmt->execute([
-                "beerId" => $beerId,
-                "ingredientId" => $ingredientId
+                'beer_id' => $beerId,
+                'ingredient_id' => $ingredientId,
             ]);
+            $beerIngredient = $stmt->fetch(PDO::FETCH_OBJ);
+
+            // add ingredient if not present
+            if (!$beerIngredient) {
+                $stmt = $this->pdo->prepare("INSERT INTO beer_ingredient (beer_id, ingredient_id) VALUES (:beerId, :ingredientId)");
+                $stmt->execute([
+                    "beerId" => $beerId,
+                    "ingredientId" => $ingredientId
+                ]);
+            }
 
             return $this->read($beerId);
             
