@@ -4,3 +4,4 @@ RewriteRule ^beers/?$ controllers/beerController.php?%{QUERY_STRING}
 RewriteRule ^beers/([0-9]+)$ controllers/beerController.php?id=$1&%{QUERY_STRING}
 RewriteRule ^ingredients/?$ controllers/ingredientController.php?%{QUERY_STRING}
 RewriteRule ^ingredients/([0-9]+)$ controllers/ingredientController.php?id=$1&%{QUERY_STRING}
+RewriteRule ^initial_beers/?$ controllers/initialBeersController.php?%{QUERY_STRING}
