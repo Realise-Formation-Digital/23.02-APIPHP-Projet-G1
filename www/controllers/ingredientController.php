@@ -1,6 +1,7 @@
 <?php
 
 require_once("../models/Ingredient.php");
+require_once("../serializers/ingredientSerializer.php");
 require_once("./baseController.php");
 
 /**
@@ -8,6 +9,7 @@ require_once("./baseController.php");
  *
  * @param int $id
  * @return array
+ * @throws Exception
  */
 function read(int $id): array
 {
@@ -17,9 +19,34 @@ function read(int $id): array
     return serializeIngredient($ingredient);
 }
 
-//cette function est une partie de SCRUD, Search pour chercher un ingredient dans la table ingredient.
+/**
+ * Cette function est une partie de SCRUD, Search pour chercher un ingredient dans la table ingredient.
+ *
+ * @param $perPage
+ * @param $page
+ * @param $sort
+ * @param $filter
+ * @return array
+ * @throws Exception
+ */
 function search($perPage, $page, $sort, $filter): array
 {
+    if ($filter != "malt" && $filter != "hops") {
+        throw new Exception("Le type ne peut être que malt ou hops.", 400);
+    }
+
+    if ($page <= 0) {
+        throw new Exception("La page commence à 1.", 400);
+    }
+
+    if ($perPage <= 0) {
+        throw new Exception("Il doit y avoir au moins une bière par page", 400);
+    }
+
+    if ($sort != "name") {
+        throw new Exception("On ne peut trier que par nom (name).", 400);
+    }
+
     $ingredient = new Ingredient();
     $ingredients = $ingredient->search($perPage, $page, $sort, $filter);
     $serializedIngredients = [];
@@ -40,7 +67,7 @@ function create(stdClass $body): array
      * Then create object newIngredient with the content of body
      * Finally return encode in JSON format
      */
-    $ingredient = deserializeBody($body);
+    $ingredient = deserializeIngredient($body);
     $newIngredient = $ingredient->create($ingredient);
     return serializeIngredient($newIngredient);
 }
@@ -51,7 +78,7 @@ function create(stdClass $body): array
  */
 function update(int $id, stdClass $body): array
 {
-    $ingredient = deserializeBody($body);
+    $ingredient = deserializeIngredient($body);
     $updatedIngredient = $ingredient->update($id, $ingredient);
     return serializeIngredient($updatedIngredient);
 }
@@ -61,56 +88,4 @@ function delete(int $id): array
     $ingredient = new Ingredient();
     $message = $ingredient->delete($id);
     return ["message" => $message];
-}
-
-//avec cette function on a change JSON pour objet
-function serializeIngredient(Ingredient $ingredient): array
-{
-    return [
-        'id' => $ingredient->getId(),
-        "type" => $ingredient->getType(),
-        "name" => $ingredient->getName(),
-        "amount" => [
-            "value" => $ingredient->getAmountValue(),
-            "unit" => $ingredient->getAmountUnit(),
-            "add" => $ingredient->getAmountAdd(),
-            "attribute" => $ingredient->getAmountAttribute()
-        ]
-    ];
-}
-
-
-/**
- * with this function we  change JSON for object
- */
-function deserializeBody(stdClass $body): Ingredient
-{
-    $tempIngredient = new Ingredient();
-
-    if (isset($body->type)) {
-        $tempIngredient->setType($body->type);
-    }
-
-    if (isset($body->name)) {
-        $tempIngredient->setName($body->name);
-    }
-
-    if (isset($body->amount)) {
-        if (isset($body->amount->value)) {
-            $tempIngredient->setAmountValue($body->amount->value);
-        }
-
-        if (isset($body->amount->unit)) {
-            $tempIngredient->setAmountUnit($body->amount->unit);
-        }
-
-        if (isset($body->amount->add)) {
-            $tempIngredient->setAmountAdd($body->amount->add);
-        }
-
-        if (isset($body->amount->attribute)) {
-            $tempIngredient->setAmountAttribute($body->amount->attribute);
-        }
-    }
-    return $tempIngredient;
 }
