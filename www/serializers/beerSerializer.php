@@ -122,6 +122,8 @@ function deserializeBeer(stdClass $body): Beer
             if (strlen($body->food_pairing[0]) > 50) {
                 $tempBeer->setFoodPairing1(substr($body->food_pairing[0], 0, 50));
             }
+        } else {
+            $tempBeer->setFoodPairing1(null);
         }
 
         if (isset($body->food_pairing[1])) {
@@ -130,6 +132,8 @@ function deserializeBeer(stdClass $body): Beer
             if (strlen($body->food_pairing[1]) > 50) {
                 $tempBeer->setFoodPairing2(substr($body->food_pairing[1], 0, 50));
             }
+        } else {
+            $tempBeer->setFoodPairing2(null);
         }
 
         if (isset($body->food_pairing[2])) {
@@ -138,6 +142,8 @@ function deserializeBeer(stdClass $body): Beer
             if (strlen($body->food_pairing[2]) > 50) {
                 $tempBeer->setFoodPairing3(substr($body->food_pairing[2], 0, 50));
             }
+        } else {
+            $tempBeer->setFoodPairing3(null);
         }
 
     }

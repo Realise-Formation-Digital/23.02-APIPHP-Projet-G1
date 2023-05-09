@@ -24,7 +24,7 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `beers` (
   `id` int(255) NOT NULL AUTO_INCREMENT,
-  `name` varchar(25) DEFAULT NULL,
+  `name` varchar(25) NOT NULL,
   `tagline` varchar(50) NOT NULL,
   `first_brewed` date NOT NULL,
   `description` varchar(250) NOT NULL,
@@ -80,6 +80,6 @@ ALTER TABLE `beer_ingredient`
 -- Contraintes pour la table `beer_ingredient`
 --
 ALTER TABLE `beer_ingredient`
-  ADD CONSTRAINT `beer_ingredient_ibfk_1` FOREIGN KEY (`ingredient_id`) REFERENCES `ingredients` (`id`),
-  ADD CONSTRAINT `beer_ingredient_ibfk_2` FOREIGN KEY (`beer_id`) REFERENCES `beers` (`id`);
+  ADD CONSTRAINT `beer_ingredient_ibfk_1` FOREIGN KEY (`ingredient_id`) REFERENCES `ingredients` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `beer_ingredient_ibfk_2` FOREIGN KEY (`beer_id`) REFERENCES `beers` (`id`) ON DELETE CASCADE;
 COMMIT;
