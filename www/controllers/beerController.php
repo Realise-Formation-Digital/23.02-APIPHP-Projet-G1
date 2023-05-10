@@ -5,9 +5,8 @@ require_once("../serializers/beerSerializer.php");
 require_once("./baseController.php");
 
 /**
- * GET a beer by a id
  * Instantciation of a beer
- * read the beer selected with the instanciation
+ * read selected beer
  * return the serialize version of selected beer.
  */
 function read(int $id)

@@ -63,7 +63,7 @@ function search($perPage, $page, $sort, $filter): array
 function create(stdClass $body): array
 {
     /**
-     * first decode the JSON format in body
+     * decode JSON format in object 
      * Then create object newIngredient with the content of body
      * Finally return encode in JSON format
      */

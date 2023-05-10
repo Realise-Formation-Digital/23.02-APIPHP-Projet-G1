@@ -235,12 +235,12 @@ class Beer extends Database
             $stmt->bindValue("page", $perPage *($page-1), PDO::PARAM_INT);
             $stmt->bindValue("filter", $filter);
             $stmt->execute();
-
+            //to recover all beers objects
             $beers = $stmt->fetchAll(PDO::FETCH_OBJ);
 
             $beersObj = [];
             foreach ($beers as $beer) {
-                // recover ingredients from beer
+                // recover ingredients from beer_ingredient
                 $stmt = $this->pdo->prepare("SELECT * FROM beer_ingredient WHERE beer_id = :id");
                 $stmt->execute([
                     'id' => $beer->id
@@ -313,8 +313,7 @@ class Beer extends Database
     }
 
     /**
-     * Method to get a unique beer by id from db
-     *
+     * method to read A UNIQUE beer
      * @param int $id
      * @return Beer
      * @throws Exception
@@ -322,22 +321,25 @@ class Beer extends Database
     public function read(int $id): Beer
     {
         try {
-           
+            //query DB table beers - all column - select by id
             $stmt = $this->pdo->prepare("SELECT * FROM beers WHERE id = :id");
             $stmt->execute([
                 'id' => $id
             ]);
+            //new object of connection
             $beer = $stmt->fetch(PDO::FETCH_OBJ);
 
-            //test if beer exists
+            //test if beer exists, error message if not 
             if (!$beer) {
-                throw new Exception("La bière d'id $id n'existe pas", 400);
+                throw new Exception("La bière $id n'existe pas", 400);
             }
 
+            //query DB beer_ingredient- all columns - selected by id 
             $stmt = $this->pdo->prepare("SELECT * FROM beer_ingredient WHERE beer_id = :id");
             $stmt->execute([
                 'id' => $id
             ]);
+            //transform to object
             $beersIngredients = $stmt->fetchAll(PDO::FETCH_OBJ);
 
             $ingredients = [];
@@ -346,7 +348,7 @@ class Beer extends Database
                 $tempIngredient = $tempIngredient->read($beerIngredient->ingredient_id);
                 $ingredients[] = $tempIngredient;
             }
-
+            //new object/instanciation - calls proprieties (private)
             $beerObj = new Beer();
             $beerObj->setId($beer->id);
             $beerObj->setName($beer->name);

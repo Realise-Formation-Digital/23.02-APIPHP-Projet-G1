@@ -131,12 +131,13 @@ class Ingredient extends Database
     public function create(Ingredient $ingredient): Ingredient
     {
         try {
-            //test if ingredient name exists (unique)
+            //test if ingredient name exists
             $ingredientExist = $this->ingredientExistByNameType($ingredient->getName(), $ingredient->getType());
+            //if already exist, error message
             if ($ingredientExist) {
                 throw new Exception("L'ingrédient avec ce nom existe déjà.", 400);
             }
-
+            //query to insert in DB if ingredient name is not already existing
             $stmt = $this->pdo->prepare("INSERT INTO ingredients (type, name, amount_value, amount_unit, amount_add, amount_attribute) VALUES (:type, :name, :amount_value, :amount_unit, :amount_add, :amount_attribute)");
             $stmt->execute([
                 "type" => $ingredient->getType(),
