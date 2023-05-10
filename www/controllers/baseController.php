@@ -1,12 +1,15 @@
 <?php
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json; charset=UTF-8");
+header("Access-Control-Allow-Methods: OPTIONS,GET,POST,PUT,DELETE");
+header("Access-Control-Max-Age: 3600");
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
 parse_str($_SERVER['QUERY_STRING'], $query);
 $body = json_decode(file_get_contents('php://input'), false);
 $method = $_SERVER['REQUEST_METHOD'];
 
 try {
-    header('Content-Type:application/json;charset=utf-8');
-
     // test if body is a correct JSON (when we use body)
     if (json_last_error() != JSON_ERROR_NONE && $method != "GET" && $method != "DELETE"  && !isset($query['beer_id'])) {
         throw new Exception("Le body de la requête est mal formé.", 400);
