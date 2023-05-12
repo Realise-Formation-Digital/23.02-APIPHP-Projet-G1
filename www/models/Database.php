@@ -1,6 +1,6 @@
 <?php
 
-require_once("../db/connection.php");
+require_once("../db/Connection.php");
 
 class Database
 {
