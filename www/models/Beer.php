@@ -230,7 +230,7 @@ class Beer extends Database
     {
         try {
             //Filter : recover beer with ingredients, order by asc,
-            $stmt = $this->pdo->prepare ("SELECT DISTINCT beers.id, beers.name, beers.description, beers.tagline, beers.first_brewed, beers.description, beers.image_url, beers.brewers_tips, beers.contributed_by, beers.food_pairing1, beers.food_pairing2, beers.food_pairing3 FROM beers LEFT JOIN beer_ingredient ON beers.id = beer_ingredient.beer_id JOIN ingredients ON ingredients.id = beer_ingredient.ingredient_id WHERE ingredients.name LIKE :ingredient_filter AND beers.name LIKE :beer_filter ORDER BY beers.$sort LIMIT :perPage OFFSET :page");
+            $stmt = $this->pdo->prepare ("SELECT DISTINCT beers.id, beers.name, beers.description, beers.tagline, beers.first_brewed, beers.description, beers.image_url, beers.brewers_tips, beers.contributed_by, beers.food_pairing1, beers.food_pairing2, beers.food_pairing3 FROM beers LEFT JOIN beer_ingredient ON beers.id = beer_ingredient.beer_id JOIN ingredients ON ingredients.id = beer_ingredient.ingredient_id WHERE UPPER(ingredients.name) LIKE CONCAT(UPPER(:ingredient_filter),'%') AND UPPER(beers.name) LIKE CONCAT(UPPER(:beer_filter),'%') ORDER BY beers.$sort LIMIT :perPage OFFSET :page");
             $stmt->bindValue("perPage", $perPage, PDO::PARAM_INT);
             $stmt->bindValue("page", $perPage *($page-1), PDO::PARAM_INT);
             $stmt->bindValue("beer_filter", $beerFilter);
