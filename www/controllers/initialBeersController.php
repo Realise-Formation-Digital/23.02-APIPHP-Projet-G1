@@ -83,13 +83,13 @@ function create(array $body): array
     }
 
     $beer = new Beer();
-    $beers = $beer->search(10,1, "name", "%");
+    $beers = $beer->search(10,1, "name", "", "");
 
     $serializedBeers = [];
-    foreach ($beers as $beer) {
+    foreach ($beers["data"] as $beer) {
         $serializedBeers[] = serializeBeer($beer);
     }
-    return $serializedBeers;
+    return array("metadata" => $beers["metadata"], "data" => $serializedBeers);
 }
 
 /**
