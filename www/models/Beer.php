@@ -229,6 +229,13 @@ class Beer extends Database
     public function search($perPage, $page, $sort, $beerFilter, $ingredientFilter): array
     {
         try {
+            //count beers only with filters (without pagination)
+            $stmtCount = $this->pdo->prepare ("SELECT DISTINCT beers.id FROM beers LEFT JOIN beer_ingredient ON beers.id = beer_ingredient.beer_id JOIN ingredients ON ingredients.id = beer_ingredient.ingredient_id WHERE UPPER(ingredients.name) LIKE CONCAT(UPPER(:ingredient_filter),'%') AND UPPER(beers.name) LIKE CONCAT(UPPER(:beer_filter),'%')");
+            $stmtCount->bindValue("beer_filter", $beerFilter);
+            $stmtCount->bindValue("ingredient_filter", $ingredientFilter);
+            $stmtCount->execute();
+            $beersCount = $stmtCount->rowCount();
+
             //Filter : recover beer with ingredients, order by asc,
             $stmt = $this->pdo->prepare ("SELECT DISTINCT beers.id, beers.name, beers.description, beers.tagline, beers.first_brewed, beers.description, beers.image_url, beers.brewers_tips, beers.contributed_by, beers.food_pairing1, beers.food_pairing2, beers.food_pairing3 FROM beers LEFT JOIN beer_ingredient ON beers.id = beer_ingredient.beer_id JOIN ingredients ON ingredients.id = beer_ingredient.ingredient_id WHERE UPPER(ingredients.name) LIKE CONCAT(UPPER(:ingredient_filter),'%') AND UPPER(beers.name) LIKE CONCAT(UPPER(:beer_filter),'%') ORDER BY beers.$sort LIMIT :perPage OFFSET :page");
             $stmt->bindValue("perPage", $perPage, PDO::PARAM_INT);
@@ -270,7 +277,7 @@ class Beer extends Database
                 $beersObj[] = $tempBeer;
             }
 
-            return $beersObj;
+            return array("metadata" => ["total" => $beersCount], "data" => $beersObj);
         } catch (Exception $e) {
             throw $e;
         }

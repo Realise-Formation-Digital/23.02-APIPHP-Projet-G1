@@ -38,10 +38,10 @@ function search($perPage, $page, $sort, $beerFilter, $ingredientFilter): array
     $beers = $beer->search($perPage, $page, $sort, $beerFilter, $ingredientFilter);
 
     $serializedBeers = [];
-    foreach ($beers as $beer) {
+    foreach ($beers["data"] as $beer) {
         $serializedBeers[] = serializeBeer($beer);
     }
-    return $serializedBeers;   
+    return array("metadata" => $beers["metadata"], "data" => $serializedBeers);
 }
 
 /**
