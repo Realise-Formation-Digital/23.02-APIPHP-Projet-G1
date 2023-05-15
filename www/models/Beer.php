@@ -231,7 +231,7 @@ class Beer extends Database
         try {
             //count beers only with filters (without pagination)
             $stmtCount = $this->pdo->prepare ("SELECT DISTINCT beers.id FROM beers LEFT JOIN beer_ingredient ON beers.id = beer_ingredient.beer_id JOIN ingredients ON ingredients.id = beer_ingredient.ingredient_id WHERE UPPER(ingredients.name) LIKE CONCAT('%',UPPER(:ingredient_filter),'%') AND UPPER(beers.name) LIKE CONCAT('%',UPPER(:beer_filter),'%')");
-            $stmtCount->bindValue("beer_filter", "ab");
+            $stmtCount->bindValue("beer_filter", $beerFilter);
             $stmtCount->bindValue("ingredient_filter", $ingredientFilter);
             $stmtCount->execute();
             $beersCount = $stmtCount->rowCount();
