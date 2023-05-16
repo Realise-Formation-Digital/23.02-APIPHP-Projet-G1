@@ -1,13 +1,26 @@
 <?php
+/*
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: OPTIONS,GET,POST,PUT,DELETE");
 header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+*/
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: Origin, X-API-KEY, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method, Access-Control-Allow-Headers, Authorization, observe, enctype, Content-Length, X-Csrf-Token");
+header("Access-Control-Allow-Methods: GET, PUT, POST, DELETE, PATCH, OPTIONS");
+header("Access-Control-Allow-Credentials: true");
+header("Access-Control-Max-Age: 3600");
+header('content-type: application/json; charset=utf-8');
+$method = $_SERVER['REQUEST_METHOD'];
+if ($method == "OPTIONS") {
+    header("HTTP/1.1 200 OK CORS");
+    die();
+}
 
 parse_str($_SERVER['QUERY_STRING'], $query);
 $body = json_decode(file_get_contents('php://input'), false);
-$method = $_SERVER['REQUEST_METHOD'];
+// $method = $_SERVER['REQUEST_METHOD'];
 
 try {
     // test if body is a correct JSON (when we use body)
