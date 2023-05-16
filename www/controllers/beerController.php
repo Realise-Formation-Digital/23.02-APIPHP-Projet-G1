@@ -20,7 +20,7 @@ function read(int $id)
 /**
  * @throws Exception
  */
-function search($perPage, $page, $sort, $beerFilter, $ingredientFilter): array
+function search($perPage, $page, $sort, $beerFilter): array
 {
     if ($page <= 0) {
         throw new Exception("La page commence à 1.", 400);
@@ -35,7 +35,7 @@ function search($perPage, $page, $sort, $beerFilter, $ingredientFilter): array
     }
 
     $beer = new Beer();
-    $beers = $beer->search($perPage, $page, $sort, $beerFilter, $ingredientFilter);
+    $beers = $beer->search($perPage, $page, $sort, $beerFilter);
 
     $serializedBeers = [];
     foreach ($beers["data"] as $beer) {

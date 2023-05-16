@@ -1,11 +1,5 @@
 <?php
-/*
-header("Access-Control-Allow-Origin: *");
-header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Methods: OPTIONS,GET,POST,PUT,DELETE");
-header("Access-Control-Max-Age: 3600");
-header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-*/
+
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Origin, X-API-KEY, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method, Access-Control-Allow-Headers, Authorization, observe, enctype, Content-Length, X-Csrf-Token");
 header("Access-Control-Allow-Methods: GET, PUT, POST, DELETE, PATCH, OPTIONS");
@@ -33,7 +27,6 @@ try {
     $body = isset($body) ? $body : '';
     $filter = isset($query['filter']) ? (string) $query['filter'] : '%';
     $beerFilter = isset($query['beer_filter']) ? (string) $query['beer_filter'] : '';
-    $ingredientFilter = isset($query['ingredient_filter']) ? (string) $query['ingredient_filter'] : '';
     $sort =  isset($query['sort']) ? (string) $query['sort'] : 'name';
     $perPage = isset($query['per_page']) ? (int) $query['per_page'] : 10;
     $page = isset($query['page']) ? (int) $query['page'] : 1;
@@ -46,7 +39,7 @@ try {
             if ($id) {
                 $resultat = read($id);
             } else {
-                $resultat = search($perPage, $page, $sort, $beerFilter, $ingredientFilter);
+                $resultat = search($perPage, $page, $sort, $beerFilter);
             }
             break;
         case 'POST':
