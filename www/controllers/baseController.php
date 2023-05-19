@@ -23,6 +23,7 @@ try {
     }
 
     // Récupération des variables.
+    $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     $id = isset($query['id']) ? (int) $query['id'] : '';
     $body = isset($body) ? $body : '';
     $filter = isset($query['filter']) ? (string) $query['filter'] : '%';
@@ -39,7 +40,12 @@ try {
             if ($id) {
                 $resultat = read($id);
             } else {
-                $resultat = search($perPage, $page, $sort, $beerFilter);
+                if ($uri === "/ingredients") {
+                    $resultat = search($perPage, $page, $sort, $filter);
+                } else {
+                    $resultat = search($perPage, $page, $sort, $beerFilter);
+                }
+
             }
             break;
         case 'POST':
