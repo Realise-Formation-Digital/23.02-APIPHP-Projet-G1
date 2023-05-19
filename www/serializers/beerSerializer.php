@@ -40,7 +40,7 @@ function deserializeBeer(stdClass $body): Beer
 {
     $tempBeer = new Beer();
 
-    if (isset($body->name)) {
+    if (!empty($body->name)) {
         $tempBeer->setName($body->name);
 
         if (strlen($body->name) > 25) {
@@ -50,7 +50,7 @@ function deserializeBeer(stdClass $body): Beer
         throw new Exception("Le nom ne peut pas être nul.", 400);
     }
 
-    if (isset($body->tagline)) {
+    if (!empty($body->tagline)) {
         $tempBeer->setTagline($body->tagline);
 
         if (strlen($body->tagline) > 50) {
@@ -60,11 +60,11 @@ function deserializeBeer(stdClass $body): Beer
         throw new Exception("Le tagline ne peut pas être nul.", 400);
     }
 
-    if (isset($body->first_brewed)) {
+    if (!empty($body->first_brewed)) {
 
 // test if format date like 05/2023
         if (!preg_match("/^[0-9]{2}\/[0-9]{4}$/", $body->first_brewed)) {
-            throw new Exception("La date doit être au format MM/YYYY. Exemple: 05/2023");
+            throw new Exception("La date doit être au format MM/YYYY. Exemple: 05/2023", 400);
         }
 
         $year = substr($body->first_brewed, 3, 4);
@@ -75,7 +75,7 @@ function deserializeBeer(stdClass $body): Beer
         throw new Exception("Le first brewed ne peut pas être nul.", 400);
     }
 
-    if (isset($body->description)) {
+    if (!empty($body->description)) {
         $tempBeer->setDescription($body->description);
 
         if (strlen($body->description) > 250) {
@@ -85,7 +85,7 @@ function deserializeBeer(stdClass $body): Beer
         throw new Exception("La description ne peut pas être nulle.", 400);
     }
 
-    if (isset($body->image_url)) {
+    if (!empty($body->image_url)) {
         $tempBeer->setImageUrl($body->image_url);
 
         if (strlen($body->image_url) > 500) {
@@ -95,7 +95,7 @@ function deserializeBeer(stdClass $body): Beer
         throw new Exception("L'url de l'image peut pas être nulle.", 400);
     }
 
-    if (isset($body->brewers_tips)) {
+    if (!empty($body->brewers_tips)) {
         $tempBeer->setBrewersTips($body->brewers_tips);
 
         if (strlen($body->brewers_tips) > 500) {
@@ -105,7 +105,7 @@ function deserializeBeer(stdClass $body): Beer
         throw new Exception("Le brewer tips ne peut pas être nul.", 400);
     }
 
-    if (isset($body->contributed_by)) {
+    if (!empty($body->contributed_by)) {
         $tempBeer->setContributedBy($body->contributed_by);
 
         if (strlen($body->contributed_by) > 50) {
@@ -115,8 +115,8 @@ function deserializeBeer(stdClass $body): Beer
         throw new Exception("La contribution ne peut pas être nulle.", 400);
     }
 
-    if (isset($body->food_pairing)) {
-        if (isset($body->food_pairing[0])) {
+    if (!empty($body->food_pairing)) {
+        if (!empty($body->food_pairing[0])) {
             $tempBeer->setFoodPairing1($body->food_pairing[0]);
 
             if (strlen($body->food_pairing[0]) > 50) {
@@ -126,7 +126,7 @@ function deserializeBeer(stdClass $body): Beer
             $tempBeer->setFoodPairing1(null);
         }
 
-        if (isset($body->food_pairing[1])) {
+        if (!empty($body->food_pairing[1])) {
             $tempBeer->setFoodPairing2($body->food_pairing[1]);
 
             if (strlen($body->food_pairing[1]) > 50) {
@@ -136,7 +136,7 @@ function deserializeBeer(stdClass $body): Beer
             $tempBeer->setFoodPairing2(null);
         }
 
-        if (isset($body->food_pairing[2])) {
+        if (!empty($body->food_pairing[2])) {
             $tempBeer->setFoodPairing3($body->food_pairing[2]);
 
             if (strlen($body->food_pairing[2]) > 50) {

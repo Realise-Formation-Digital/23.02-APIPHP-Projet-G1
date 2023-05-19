@@ -31,7 +31,8 @@ function read(int $id): array
  */
 function search($perPage, $page, $sort, $filter): array
 {
-    if ($filter != "malt" && $filter != "hops") {
+
+    if ($filter != "malt" && $filter != "hops" && $filter != "%") {
         throw new Exception("Le type ne peut être que malt ou hops.", 400);
     }
 

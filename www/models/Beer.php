@@ -226,14 +226,20 @@ class Beer extends Database
      * @return array
      * @throws Exception
      */
-    public function search($perPage, $page, $sort, $filter): array
+    public function search($perPage, $page, $sort, $beerFilter): array
     {
         try {
+            //count beers only with filters (without pagination)
+            $stmtCount = $this->pdo->prepare ("SELECT DISTINCT beers.id FROM beers WHERE UPPER(beers.name) LIKE CONCAT('%',UPPER(:beer_filter),'%')");
+            $stmtCount->bindValue("beer_filter", $beerFilter);
+            $stmtCount->execute();
+            $beersCount = $stmtCount->rowCount();
+
             //Filter : recover beer with ingredients, order by asc,
-            $stmt = $this->pdo->prepare ("SELECT DISTINCT beers.id, beers.name, beers.description, beers.tagline, beers.first_brewed, beers.description, beers.image_url, beers.brewers_tips, beers.contributed_by, beers.food_pairing1, beers.food_pairing2, beers.food_pairing3 FROM beers LEFT JOIN beer_ingredient ON beers.id = beer_ingredient.beer_id JOIN ingredients ON ingredients.id = beer_ingredient.ingredient_id WHERE ingredients.name LIKE :filter ORDER BY beers.$sort LIMIT :perPage OFFSET :page");
+            $stmt = $this->pdo->prepare ("SELECT DISTINCT beers.id, beers.name, beers.description, beers.tagline, beers.first_brewed, beers.description, beers.image_url, beers.brewers_tips, beers.contributed_by, beers.food_pairing1, beers.food_pairing2, beers.food_pairing3 FROM beers WHERE UPPER(beers.name) LIKE CONCAT('%',UPPER(:beer_filter),'%') ORDER BY beers.$sort LIMIT :perPage OFFSET :page");
             $stmt->bindValue("perPage", $perPage, PDO::PARAM_INT);
             $stmt->bindValue("page", $perPage *($page-1), PDO::PARAM_INT);
-            $stmt->bindValue("filter", $filter);
+            $stmt->bindValue("beer_filter", $beerFilter);
             $stmt->execute();
 
             $beers = $stmt->fetchAll(PDO::FETCH_OBJ);
@@ -269,7 +275,7 @@ class Beer extends Database
                 $beersObj[] = $tempBeer;
             }
 
-            return $beersObj;
+            return array("metadata" => ["total" => $beersCount], "data" => $beersObj);
         } catch (Exception $e) {
             throw $e;
         }
@@ -405,6 +411,9 @@ class Beer extends Database
             $beer->setId($id);
             return $beer;
         } catch (Exception $e) {
+            if (str_contains($e->getMessage(), "for key 'unique_beer_name'")) {
+                throw new Exception("La bière avec ce nom existe déjà.", 400);
+            }
             throw $e;
         }
     }
