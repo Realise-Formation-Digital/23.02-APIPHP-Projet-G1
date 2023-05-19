@@ -411,6 +411,9 @@ class Beer extends Database
             $beer->setId($id);
             return $beer;
         } catch (Exception $e) {
+            if (str_contains($e->getMessage(), "for key 'unique_beer_name'")) {
+                throw new Exception("La bière avec ce nom existe déjà.", 400);
+            }
             throw $e;
         }
     }
